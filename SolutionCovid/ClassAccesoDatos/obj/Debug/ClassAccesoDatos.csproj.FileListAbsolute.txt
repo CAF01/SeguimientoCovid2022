@@ -1,0 +1,6 @@
+C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassAccesoDatos\bin\Debug\ClassAccesoDatos.dll
+C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassAccesoDatos\bin\Debug\ClassAccesoDatos.pdb
+C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassAccesoDatos\obj\Debug\ClassAccesoDatos.csproj.AssemblyReference.cache
+C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassAccesoDatos\obj\Debug\ClassAccesoDatos.csproj.CoreCompileInputs.cache
+C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassAccesoDatos\obj\Debug\ClassAccesoDatos.dll
+C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassAccesoDatos\obj\Debug\ClassAccesoDatos.pdb

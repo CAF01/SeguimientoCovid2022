@@ -332,44 +332,44 @@ namespace ClassLogicaNegocios
 
         // Mostrar todos los profesores contagiados de un programa educativo en un cuatrimestre 
         //especifico
-        //public List<FiltroProgramaPeriodo> MostrarContagiadosPorFiltroCuatrimestre(Cuatrimestre cuatrimestre)
-        //{
-        //    List<FiltroProgramaPeriodo> list = null;
-        //    string querySql = "SELECT Pr.ProgramaEd,C.id_Cuatrimestre,C.Periodo,C.Anio,P.RegistroEmpleado,(P.Nombre +' '+P.Ap_pat +' '+ Ap_mat) as Profesor," +
-        //        "Pos.Id_posProfe,Pos.FechaConfirmado FROM GrupoCuatrimestre GC " +
-        //        "INNER JOIN Cuatrimestre C ON C.id_Cuatrimestre = GC.F_Cuatri " +
-        //        "INNER JOIN ProgramaEducativo Pr ON Pr.Id_pe = GC.F_ProgEd INNER JOIN ProfeGRupo PG ON PG.F_GruCuat = GC.Id_GruCuat " +
-        //        "INNER JOIN Profesor P ON P.ID_Profe = PG.F_Profe INNER JOIN PositivoProfe Pos ON Pos.F_Profe = P.ID_Profe " +
-        //        "WHERE Pos.FechaConfirmado BETWEEN @start AND @end";
-        //    SqlParameter[] sqlParameters = new SqlParameter[]
-        //    {
-        //        new SqlParameter("start",cuatrimestre.fechaInicio),
-        //        new SqlParameter("end",cuatrimestre.fechaFin)
-        //    };
-        //    SqlDataReader sqlDataReader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
+        public List<FiltroProgramaPeriodo> MostrarContagiadosPorFiltroCuatrimestre(Cuatrimestre cuatrimestre)
+        {
+            List<FiltroProgramaPeriodo> list = null;
+            string querySql = "SELECT Pr.ProgramaEd,C.id_Cuatrimestre,C.Periodo,C.Anio,P.RegistroEmpleado,(P.Nombre +' '+P.Ap_pat +' '+ Ap_mat) as Profesor," +
+                "Pos.Id_posProfe,Pos.FechaConfirmado FROM GrupoCuatrimestre GC " +
+                "INNER JOIN Cuatrimestre C ON C.id_Cuatrimestre = GC.F_Cuatri " +
+                "INNER JOIN ProgramaEducativo Pr ON Pr.Id_pe = GC.F_ProgEd INNER JOIN ProfeGRupo PG ON PG.F_GruCuat = GC.Id_GruCuat " +
+                "INNER JOIN Profesor P ON P.ID_Profe = PG.F_Profe INNER JOIN PositivoProfe Pos ON Pos.F_Profe = P.ID_Profe " +
+                "WHERE Pos.FechaConfirmado BETWEEN @start AND @end";
+            SqlParameter[] sqlParameters = new SqlParameter[]
+            {
+                new SqlParameter("start",cuatrimestre.fechaInicio),
+                new SqlParameter("end",cuatrimestre.fechaFin)
+            };
+            SqlDataReader sqlDataReader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
 
-        //    if (sqlDataReader != null && sqlDataReader.HasRows)
-        //    {
-        //        list = new List<FiltroProgramaPeriodo>();
-        //        while (sqlDataReader.Read())
-        //        {
-        //            list.Add(new FiltroProgramaPeriodo()
-        //            {
-        //                ProgramaEd = sqlDataReader.GetString(0),
-        //                id_Cuatrimestre = sqlDataReader.GetInt32(1),
-        //                Periodo = sqlDataReader.GetString(2),
-        //                Anio = sqlDataReader.GetString(3),
-        //                RegistroEmpleado = sqlDataReader.GetInt32(4),
-        //                Profesor = sqlDataReader.GetString(5),
-        //                Id_posProfe = sqlDataReader.GetInt32(6),
-        //                FechaConfirmado = sqlDataReader.GetDateTime(7)
-        //            });
-        //        }
-        //    }
-               // this.AccesoDatosSql.CerrarConexion();
-        //    return list;
+            if (sqlDataReader != null && sqlDataReader.HasRows)
+            {
+                list = new List<FiltroProgramaPeriodo>();
+                while (sqlDataReader.Read())
+                {
+                    list.Add(new FiltroProgramaPeriodo()
+                    {
+                        ProgramaEd = sqlDataReader.GetString(0),
+                        id_Cuatrimestre = sqlDataReader.GetInt32(1),
+                        Periodo = sqlDataReader.GetString(2),
+                        Anio = sqlDataReader.GetString(3),
+                        RegistroEmpleado = sqlDataReader.GetInt32(4),
+                        Profesor = sqlDataReader.GetString(5),
+                        Id_posProfe = sqlDataReader.GetInt32(6),
+                        FechaConfirmado = sqlDataReader.GetDateTime(7)
+                    });
+                }
+            }
+            this.AccesoDatosSql.CerrarConexion();
+            return list;
 
-        //}
+        }
 
         //Mostrar los contagios de un profesor
         public List<PositivoProfe> BuscarCasosPositivoDeProfesor(int idProfe, int RegistroEmpleado)

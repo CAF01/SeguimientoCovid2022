@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ClassAccesoDatos">
-      <HintPath>..\ClassAccesoDatos\bin\Debug\ClassAccesoDatos.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,16 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LogicaNegociosAlumno.cs" />
-    <Compile Include="LogicaNegociosCuatrimestre.cs" />
-    <Compile Include="LogicaNegociosMedico.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ClassEntidades\ClassEntidades.csproj">
-      <Project>{C0CDBABF-20A7-41E7-B5AB-65AB52504331}</Project>
-      <Name>ClassEntidades</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

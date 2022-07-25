@@ -41,7 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogicaNegociosProfesor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClassAccesoDatos\ClassAccesoDatos.csproj">
+      <Project>{6A7F9052-AC5B-4361-891A-202E6134AF0E}</Project>
+      <Name>ClassAccesoDatos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClassEntidades\ClassEntidades.csproj">
+      <Project>{C0CDBABF-20A7-41E7-B5AB-65AB52504331}</Project>
+      <Name>ClassEntidades</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

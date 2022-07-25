@@ -1,6 +1,0 @@
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassLogicaNegocios\bin\Debug\ClassLogicaNegocios.dll
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassLogicaNegocios\bin\Debug\ClassLogicaNegocios.pdb
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassLogicaNegocios\obj\Debug\ClassLogicaNegocios.csproj.AssemblyReference.cache
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassLogicaNegocios\obj\Debug\ClassLogicaNegocios.csproj.CoreCompileInputs.cache
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassLogicaNegocios\obj\Debug\ClassLogicaNegocios.dll
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassLogicaNegocios\obj\Debug\ClassLogicaNegocios.pdb

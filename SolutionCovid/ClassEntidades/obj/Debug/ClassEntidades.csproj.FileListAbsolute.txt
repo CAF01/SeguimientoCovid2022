@@ -1,6 +1,0 @@
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassEntidades\bin\Debug\ClassEntidades.dll
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassEntidades\bin\Debug\ClassEntidades.pdb
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassEntidades\obj\Debug\ClassEntidades.csproj.AssemblyReference.cache
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassEntidades\obj\Debug\ClassEntidades.csproj.CoreCompileInputs.cache
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassEntidades\obj\Debug\ClassEntidades.dll
-C:\WebAPPCovid\SeguimientoCovid2022\SolutionCovid\ClassEntidades\obj\Debug\ClassEntidades.pdb

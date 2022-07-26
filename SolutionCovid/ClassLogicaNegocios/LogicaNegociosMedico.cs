@@ -4,9 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClassLogicaNegocios
 {
@@ -50,7 +47,7 @@ namespace ClassLogicaNegocios
         }
 
         // regla para obtener datos de un medico
-        public Medico buscarAlumno(int idMedico, ref string mensaje)
+        public Medico buscarMedico(int idMedico, ref string mensaje)
         {
             Medico medico = null;
             string query = "SELECT * FROM Medico WHERE ID_Dr=@idMedico;";
@@ -65,13 +62,14 @@ namespace ClassLogicaNegocios
                 foreach (DataRow row in dataMedico.Tables[0].Rows)
                 {
                     medico.id = (int)row[0];
-                    medico.app = (string)row[1];
-                    medico.apm = (string)row[2];
-                    medico.telefono = (string)row[3];
-                    medico.correo = (string)row[4];
-                    medico.horario = (string)row[5];
-                    medico.especialidad = (string)row[6];
-                    medico.extra = (string)row[7];
+                    medico.nombre = (string)row[1];
+                    medico.app = (string)row[2];
+                    medico.apm = (string)row[3];
+                    medico.telefono = (string)row[4];
+                    medico.correo = (string)row[5];
+                    medico.horario = (string)row[6];
+                    medico.especialidad = (string)row[7];
+                    medico.extra = (string)row[8];
                 }
             }
             return medico;
@@ -81,7 +79,7 @@ namespace ClassLogicaNegocios
         public Boolean editarMedico(int idMedico, Medico medico, ref string mensaje)
         {
             string queryUpdate = "UPDATE Medico SET Nombre=@nom,App=@app,Apm=@apm,Telefono=@tel," +
-                "correo=@correo,horario=@horario,especialidad=@especialidad,extra=@extra ID_Dr=@idMedico;";
+                "correo=@correo,horario=@horario,especialidad=@especialidad,extra=@extra WHERE ID_Dr=@idMedico;";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
                 new SqlParameter("idMedico", idMedico),
@@ -106,28 +104,15 @@ namespace ClassLogicaNegocios
                 new SqlParameter("idMedico", idMedico)
             };
 
-            // verificar que no existan dependencias
-            string queryDependence1 = "SELECT * FROM SeguimientoAL WHERE F_medico=@idMedico;";
-            string queryDependence2 = "SELECT * FROM SeguimientoPRO WHERE F_medico=@idMedico;";
-            SqlDataReader resultDependence1 = AccesoDatosSql.ConsultarReader(queryDependence1, sqlParameters, ref mensaje);
-            SqlDataReader resultDependence2 = AccesoDatosSql.ConsultarReader(queryDependence2, sqlParameters, ref mensaje);
-            if (resultDependence1.HasRows || resultDependence2.HasRows)
-            {
-                // eliminar SeguimientoAlumno
-                string queryDeleteSegAlumno = "DELETE SeguimientoAL WHERE F_medico=@idMedico;";
-                AccesoDatosSql.Modificar(queryDeleteSegAlumno, sqlParameters, ref mensaje);
-                // eliminar SeguimientoProfe
-                string queryDeleteSegProfe = "DELETE SeguimientoPRO WHERE F_medico=@idMedico;";
-                AccesoDatosSql.Modificar(queryDeleteSegProfe, sqlParameters, ref mensaje);
-                // eliminar Medico
-                string queryDeleteMedico = "DELETE Medico WHERE ID_Dr=@idMedico";
-                result = AccesoDatosSql.Modificar(queryDeleteMedico, sqlParameters, ref mensaje);
-            }
-            else
-            {
-                string queryDeleteMedico = "DELETE Medico WHERE ID_Dr=@idMedico";
-                result = AccesoDatosSql.Modificar(queryDeleteMedico, sqlParameters, ref mensaje);
-            }
+            string queryDeleteSegAlumno = "DELETE SeguimientoAL WHERE F_medico=@idMedico;";
+            AccesoDatosSql.Modificar(queryDeleteSegAlumno, sqlParameters, ref mensaje);
+            // eliminar SeguimientoProfe
+            string queryDeleteSegProfe = "DELETE SeguimientoPRO WHERE F_medico=@idMedico;";
+            AccesoDatosSql.Modificar(queryDeleteSegProfe, sqlParameters, ref mensaje);
+            // eliminar Medico
+            string queryDeleteMedico = "DELETE Medico WHERE ID_Dr=@idMedico";
+            result = AccesoDatosSql.Modificar(queryDeleteMedico, sqlParameters, ref mensaje);
+
             return result;
         }
 

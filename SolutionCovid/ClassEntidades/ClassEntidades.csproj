@@ -44,6 +44,8 @@
     <Compile Include="Alumno.cs" />
     <Compile Include="AlumnoGrupo.cs" />
     <Compile Include="Cuatrimestre.cs" />
+    <Compile Include="EstadoCivil.cs" />
+    <Compile Include="FiltroGrupoProfesor.cs" />
     <Compile Include="FiltroProgramaPeriodo.cs" />
     <Compile Include="FiltroSeguimientoProfesor.cs" />
     <Compile Include="Grupo.cs" />

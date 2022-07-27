@@ -1,6 +1,8 @@
 ﻿using ClassAccesoDatos;
 using ClassEntidades;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace ClassLogicaNegocios
@@ -52,6 +54,45 @@ namespace ClassLogicaNegocios
             return this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
         }
 
+        public List<Profesor> BuscarProfesorPorNombres(Profesor profesorSearch)
+        {
+            List<Profesor> profesors = null;
+            string querySql = "SELECT * FROM PROFESOR where (Nombre like '%'+@nom+'%' OR Ap_pat like @app+'%' or Ap_Mat like @app+'%')";
+            SqlParameter[] sqlParameters = new SqlParameter[]
+            {
+                new SqlParameter("nom",profesorSearch.Nombre),
+                new SqlParameter("app",profesorSearch.ap_pat)
+            };
+            SqlDataReader reader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
+            if (reader != null && reader.HasRows)
+            {
+                profesors = new List<Profesor>();
+                while(reader.Read())
+                {
+                    string Correo = "";
+                    string Celular = "";
+                    _= string.IsNullOrEmpty(((object)reader[7]).ToString()) ? Correo= "" : Correo = (string)reader[7];
+                    _= string.IsNullOrEmpty(((object)reader[8]).ToString()) ? Celular = "" : Celular = (string)reader[8];
+                    profesors.Add(new Profesor()
+                    {
+                        ID_Profe = (int)reader[0],
+                        RegistroEmpleado = (int)reader[1],
+                        Nombre = (string)reader[2],
+                        ap_pat = (string)reader[3],
+                        ap_mat = (string)reader[4],
+                        Genero = (string)reader[5],
+                        Correo=Correo,
+                        Celular=Celular,
+                        Categoria = (string)reader[6],
+                        F_EdoCivil = (byte)reader[9],
+                    });
+                }
+                
+            }
+            this.AccesoDatosSql.CerrarConexion();
+            return profesors;
+        }
+
         public Profesor BuscarProfesor(int IdProfesor)
         {
             Profesor profesor = null;
@@ -73,7 +114,7 @@ namespace ClassLogicaNegocios
                 profesor.Categoria = (string)reader[6];
                 profesor.Correo = (string)reader[7];
                 profesor.Celular = (string)reader[8];
-                profesor.F_EdoCivil = (int)reader[9];
+                profesor.F_EdoCivil = (byte)reader[9];
             }
             this.AccesoDatosSql.CerrarConexion();
             return profesor;
@@ -100,6 +141,10 @@ namespace ClassLogicaNegocios
                 list = new List<Profesor>();
                 while (sqlDataReader.Read())
                 {
+                    string Correo = "";
+                    string Celular = "";
+                    _ = string.IsNullOrEmpty(((object)sqlDataReader[7]).ToString()) ? Correo = "" : Correo = (string)sqlDataReader[7];
+                    _ = string.IsNullOrEmpty(((object)sqlDataReader[8]).ToString()) ? Celular = "" : Celular = (string)sqlDataReader[8];
                     list.Add(new Profesor()
                     {
                         ID_Profe = sqlDataReader.GetInt32(0),
@@ -108,16 +153,23 @@ namespace ClassLogicaNegocios
                         ap_pat = sqlDataReader.GetString(3),
                         ap_mat = sqlDataReader.GetString(4),
                         Genero = sqlDataReader.GetString(5),
+                        Correo = Correo,
+                        Celular=Celular,
                         Categoria = sqlDataReader.GetString(6),
-                        Correo = sqlDataReader.GetString(7),
-                        Celular = sqlDataReader.GetString(8),
-                        F_EdoCivil = sqlDataReader.GetInt32(9)
+                        F_EdoCivil = sqlDataReader.GetByte(9)
                     });
                 }
             }
             this.AccesoDatosSql.CerrarConexion();
             return list;
 
+        }
+
+        public DataSet MostrarProfesoresPocaInfo(ref string msg)
+        {
+            string querySql = "SELECT Nombre,Ap_pat + ' ' +Ap_Mat as Apellido, Genero,Categoria FROM PROFESOR";
+            SqlParameter[] sqlParameters = null;
+            return this.AccesoDatosSql.ConsultaDS(querySql, sqlParameters, ref msg);
         }
 
 
@@ -160,10 +212,16 @@ namespace ClassLogicaNegocios
             return this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
         }
 
-        public List<ProfeGrupo> BuscarGruposdeProfesor(int IdProfesor)
+        public List<FiltroGrupoProfesor> BuscarGruposdeProfesor(int IdProfesor)
         {
-            List<ProfeGrupo> list = null;
-            string querySql = "SELECT * FROM ProfeGrupo WHERE F_Profe=@id";
+            List<FiltroGrupoProfesor> list = null;
+            string querySql = "SELECT PG.ID_ProfeGru,P.Nombre +' '+ P.Ap_pat as Profesor, " +
+                "GC.Turno,GC.Modalidad,G.Grado,G.Letra,G.Id_grupo,C.Inicio,C.Fin,C.Periodo, " +
+                "C.Anio  FROM ProfeGRupo PG INNER JOIN Profesor P ON P.ID_Profe=PG.F_Profe " +
+                "INNER JOIN GrupoCuatrimestre GC ON GC.Id_GruCuat=PG.F_GruCuat " +
+                "INNER JOIN Grupo G ON G.Id_grupo=GC.F_Grupo " +
+                "INNER JOIN Cuatrimestre C ON C.id_Cuatrimestre=GC.F_Cuatri " +
+                "WHERE P.ID_Profe=@id AND (C.Inicio<GETDATE() AND C.Fin>GETDATE())";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
                 new SqlParameter("id",IdProfesor)
@@ -171,16 +229,22 @@ namespace ClassLogicaNegocios
             SqlDataReader reader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
             if (reader != null && reader.HasRows)
             {
-                list = new List<ProfeGrupo>();
+                list = new List<FiltroGrupoProfesor>();
                 while (reader.Read())
                 {
-                    list.Add(new ProfeGrupo()
+                    list.Add(new FiltroGrupoProfesor()
                     {
-                        Id_ProfeGrupo = reader.GetInt32(0),
-                        F_Profe = reader.GetInt32(1),
-                        F_GrupoCuatrimestre = reader.GetInt32(2),
-                        Extra = reader.GetString(3),
-                        Extra_dos = reader.GetString(4)
+                        ID_ProfeGru=reader.GetInt32(0),
+                        Profesor=reader.GetString(1),
+                        Turno=reader.GetString(2),
+                        Modalidad=reader.GetString(3),
+                        Grado=reader.GetString(4),
+                        Letra=reader.GetString(5),
+                        Id_Grupo=reader.GetInt32(6),
+                        Inicio=reader.GetDateTime(7),
+                        Fin=reader.GetDateTime(8),
+                        Periodo=reader.GetString(9),
+                        Anio=reader.GetString(10)
                     });
                 }
             }
@@ -248,6 +312,36 @@ namespace ClassLogicaNegocios
             return result;
 
 
+        }
+
+
+        public DataSet DevolverCasosPositivosCovid()
+        {
+            string msg="";
+            string querySql = "SELECT Id_posProfe as Num_Registro, FechaConfirmado as Fecha_confirmacion," +
+                "Antecedentes,NumContagio,Extra,F_Profe,Reisgo as Nivel_Riesgo FROM PositivoProfe " +
+                "ORDER BY Id_posProfe DESC";
+            SqlParameter[] sqlParameters = null;
+            return this.AccesoDatosSql.ConsultaDS(querySql, sqlParameters, ref msg);
+        }
+
+        public List<string> DevolverRutasdeCasosCovid()
+        {
+            string msg = "";
+            List<string> list=null;
+            string querySql = "SELECT Comprobacion FROM PositivoProfe ORDER BY Id_posProfe DESC";
+            SqlParameter[] sqlParameters = null;
+            SqlDataReader sqlDataReader= this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref msg);
+            if(sqlDataReader.HasRows)
+            {
+                list = new List<string>();
+                while(sqlDataReader.Read())
+                {
+                    list.Add(sqlDataReader.GetString(0));
+                }
+            }
+            this.AccesoDatosSql.CerrarConexion();
+            return list;
         }
 
         /* Métodos para SeguimientoProfesor */
@@ -463,6 +557,30 @@ namespace ClassLogicaNegocios
                         Reporte = reader.GetString(6),
                         Entrevista = reader.GetString(7),
                         Extra = reader.GetString(8)
+                    });
+                }
+            }
+            this.AccesoDatosSql.CerrarConexion();
+            return list;
+        }
+
+
+        //Lista de estado civil
+        public List<EstadoCivil> DevolverEstadoCivil()
+        {
+            List<EstadoCivil> list = null;
+            string querySql = "SELECT * FROM EstadoCivil";
+            SqlParameter[] sqlParameters = null;
+            SqlDataReader reader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
+            if (reader != null && reader.HasRows)
+            {
+                list = new List<EstadoCivil>();
+                while (reader.Read())
+                {
+                    list.Add(new EstadoCivil()
+                    {
+                        Id_Edo=reader.GetByte(0),
+                        Estado=reader.GetString(1).ToString()
                     });
                 }
             }

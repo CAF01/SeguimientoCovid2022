@@ -17,6 +17,6 @@ namespace ClassEntidades
         public string Categoria { get; set; }
         public string Correo { get; set; }
         public string Celular { get; set; }
-        public int F_EdoCivil { get; set; }
+        public Byte F_EdoCivil { get; set; }
     }
 }

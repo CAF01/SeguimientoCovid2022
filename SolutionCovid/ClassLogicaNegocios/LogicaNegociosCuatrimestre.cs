@@ -58,12 +58,18 @@ namespace ClassLogicaNegocios
                 cuatrimestre = new Cuatrimestre();
                 foreach (DataRow row in dataCuatrimestre.Tables[0].Rows)
                 {
+                    if ((object)row[3].ToString() == "")
+                        row[3] = "";
+                    if ((object)row[4].ToString() == "")
+                        row[4] = "";
+                    if ((object)row[5].ToString() == "")
+                        row[5] = "";
                     // asignar al objeto a devolver, los datos recuperados
-                    cuatrimestre.id = (int)row[0];
+                    cuatrimestre.id = Convert.ToInt16(row[0]);
                     cuatrimestre.periodo = (string)row[1];
                     cuatrimestre.anio = (int)row[2];
-                    cuatrimestre.fechaInicio = (string)row[3];
-                    cuatrimestre.fechaFin = (string)row[4];
+                    cuatrimestre.fechaInicio = (DateTime)row[3];
+                    cuatrimestre.fechaFin = (DateTime)row[4];
                     cuatrimestre.extra = (string)row[5];
                 }
             }
@@ -91,28 +97,27 @@ namespace ClassLogicaNegocios
         public Boolean eliminarCuatrimestre(int idCuatrimestre, ref string mensaje)
         {
             Boolean result = false;
-            SqlParameter[] sqlParameters = new SqlParameter[]
+            SqlParameter[] sqlParametersDep1 = new SqlParameter[]
             {
                 new SqlParameter("idCuatri", idCuatrimestre)
             };
-
-            // verificar que no existan dependencias
-            string queryDependence1 = "SELECT * FROM GrupoCuatrimestre WHERE F_Cuatri=@idCuatri;";
-            SqlDataReader resultDependence1 = AccesoDatosSql.ConsultarReader(queryDependence1, sqlParameters, ref mensaje);
-            if (resultDependence1.HasRows)
+            SqlParameter[] sqlParametersDep2 = new SqlParameter[]
             {
-                // eliminar GrupoCuatrimestre
-                string queryDeleteGrupoCuatri = "DELETE FROM GrupoCuatrimestre WHERE F_Cuatri=@idCuatri;";
-                AccesoDatosSql.Modificar(queryDeleteGrupoCuatri, sqlParameters, ref mensaje);
-                // eliminar Cuatrimestre
-                string queryDeleteCuatri = "DELETE FROM Cuatrimestre WHERE id_Cuatrimestre=@idCuatri";
-                result = AccesoDatosSql.Modificar(queryDeleteCuatri, sqlParameters, ref mensaje);
-            }
-            else
+                new SqlParameter("idCuatri", idCuatrimestre)
+            };
+            SqlParameter[] sqlParametersDel = new SqlParameter[]
             {
-                string queryDeleteCuatri = "DELETE FROM Cuatrimestre WHERE id_Cuatrimestre=@idCuatri";
-                result = AccesoDatosSql.Modificar(queryDeleteCuatri, sqlParameters, ref mensaje);
-            }
+                new SqlParameter("idCuatri", idCuatrimestre)
+            };
+            //eliminar AlumnoGrupo
+            string query1 = "delete from AlumnoGrupo WHERE F_GruCuat IN (select Id_GruCuat from GrupoCuatrimestre where F_Cuatri=@idCuatri)";
+            AccesoDatosSql.ConsultaDS(query1, sqlParametersDep1, ref mensaje);            
+            // eliminar GrupoCuatrimestre
+            string queryDeleteGrupoCuatri = "DELETE FROM GrupoCuatrimestre WHERE F_Cuatri=@idCuatri;";
+            AccesoDatosSql.Modificar(queryDeleteGrupoCuatri, sqlParametersDep2, ref mensaje);
+            // eliminar Cuatrimestre
+            string queryDeleteCuatri = "DELETE FROM Cuatrimestre WHERE id_Cuatrimestre=@idCuatri";
+            result = AccesoDatosSql.Modificar(queryDeleteCuatri, sqlParametersDel, ref mensaje);
             return result;
         }
 
@@ -128,14 +133,20 @@ namespace ClassLogicaNegocios
                 listCuatrimestres = new List<Cuatrimestre>();
                 foreach (DataRow row in dataCuatrimestres.Tables[0].Rows)
                 {
+                    if ((object)row[3].ToString() == "")
+                        row[3] = "";
+                    if ((object)row[4].ToString() == "")
+                        row[4] = "";
+                    if ((object)row[5].ToString() == "")
+                        row[5] = "";
                     listCuatrimestres.Add(new Cuatrimestre()
                     {
-                        id = (int)row[0],
+                        id = Convert.ToInt16(row[0]),
                         periodo = (string)row[1],
                         anio = (int)row[2],
-                        fechaInicio = (string)row[2],
-                        fechaFin = (string)row[3],
-                        extra = (string)row[4]
+                        fechaInicio = (DateTime)row[3],
+                        fechaFin = (DateTime)row[4],
+                        extra = (string)row[5]
                     });
                 }
             }
@@ -146,7 +157,7 @@ namespace ClassLogicaNegocios
         public List<Cuatrimestre> obtenerColeccionCuatrimestres(ref string mensaje)
         {
             List<Cuatrimestre> listCuatrimestres = null;
-            string query = "SELECT id_Cuatrimestre,Periodo,Anio FROM Cuatrimestre;";
+            string query = "SELECT id_Cuatrimestre, Periodo+cast(Anio as varchar) as Cuatrimestre from Cuatrimestre;";
             SqlParameter[] sqlParameters = null;
             DataSet dataCuatrimestres = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
             if (dataCuatrimestres != null)
@@ -156,9 +167,8 @@ namespace ClassLogicaNegocios
                 {
                     listCuatrimestres.Add(new Cuatrimestre()
                     {
-                        id = (int)row[0],
-                        periodo = (string)row[1],
-                        anio = (int)row[2]
+                        id = Convert.ToInt16(row[0]),
+                        periodo = (string)row[1]
                     });
                 }
             }
@@ -170,7 +180,12 @@ namespace ClassLogicaNegocios
         // regla para consultar datos de todos los grupo_cuatrimestre
         public DataSet consultarGruposCuatrimestres(ref string mensaje)
         {
-            string query = "SELECT * FROM GrupoCuatrimestre;";
+            string query = "select gc.Id_GruCuat, pe.ProgramaEd, cast(g.Grado as varchar)+g.Letra as Grupo, " +
+                "c.Periodo + cast(c.Anio as varchar) as Cuatrimestre, " +
+                "gc.Turno, gc.Modalidad, gc.Extra from GrupoCuatrimestre gc " +
+                "inner join ProgramaEducativo pe on gc.F_ProgEd = pe.Id_pe " +
+                "inner join Grupo g on gc.F_Grupo = g.Id_grupo " +
+                "inner join Cuatrimestre c on gc.F_Cuatri = c.id_Cuatrimestre;";
             SqlParameter[] sqlParameters = null;
             DataSet result = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
             if (result != null) { return result; }
@@ -209,11 +224,13 @@ namespace ClassLogicaNegocios
                 grupocuatri = new GrupoCuatrimestre();
                 foreach (DataRow row in dataGrupoCuatri.Tables[0].Rows)
                 {
+                    if ((object)row[6].ToString() == "")
+                        row[6] = "";
                     // asignar al objeto a devolver, los datos recuperados
                     grupocuatri.id = (int)row[0];
-                    grupocuatri.f_progEdu = (int)row[1];
-                    grupocuatri.f_grupo = (int)row[2];
-                    grupocuatri.f_cuatri = (int)row[3];
+                    grupocuatri.f_progEdu = Convert.ToByte(row[1]);
+                    grupocuatri.f_grupo = Convert.ToInt16(row[2]);
+                    grupocuatri.f_cuatri = Convert.ToInt16(row[3]);
                     grupocuatri.turno = (string)row[4];
                     grupocuatri.modalidad = (string)row[5];
                     grupocuatri.extra = (string)row[6];
@@ -244,27 +261,27 @@ namespace ClassLogicaNegocios
         public Boolean eliminarGrupoCuatrimestre(int idGrupoCuatri, ref string mensaje)
         {
             Boolean result = false;
-            SqlParameter[] sqlParameters = new SqlParameter[]
+            SqlParameter[] sqlParametersDep1 = new SqlParameter[]
             {
                 new SqlParameter("idGruCuat", idGrupoCuatri)
             };
-            // verificar que no existan dependencias
-            string queryDependence1 = "SELECT * FROM ProfeGRupo WHERE F_GruCuat=@idGruCuat;";
-            SqlDataReader resultDependence1 = AccesoDatosSql.ConsultarReader(queryDependence1, sqlParameters, ref mensaje);
-            if (resultDependence1.HasRows)
+            SqlParameter[] sqlParametersDep2 = new SqlParameter[]
             {
-                // eliminar ProfeGrupo
-                string queryDeleteGrupoCuatri = "DELETE FROM ProfeGRupo WHERE F_GruCuat=@idGruCuat;";
-                AccesoDatosSql.Modificar(queryDeleteGrupoCuatri, sqlParameters, ref mensaje);
-                // eliminar GrupoCuatrimestre
-                string queryDeleteCuatri = "DELETE FROM GrupoCuatrimestre WHERE Id_GruCuat=@idGruCuat; ";
-                result = AccesoDatosSql.Modificar(queryDeleteCuatri, sqlParameters, ref mensaje);
-            }
-            else
+                new SqlParameter("idGruCuat", idGrupoCuatri)
+            };
+            SqlParameter[] sqlParametersDel = new SqlParameter[]
             {
-                string queryDeleteCuatri = "DELETE FROM GrupoCuatrimestre WHERE Id_GruCuat=@idGruCuat; ";
-                result = AccesoDatosSql.Modificar(queryDeleteCuatri, sqlParameters, ref mensaje);
-            }
+                new SqlParameter("idGruCuat", idGrupoCuatri)
+            };
+            // eliminar AlumnoGrupo
+            string queryDeleteAlumGrupo = "delete from AlumnoGrupo where F_GruCuat=@idGruCuat;";
+            AccesoDatosSql.Modificar(queryDeleteAlumGrupo, sqlParametersDep1, ref mensaje);
+            // eliminar ProfeGrupo
+            string queryDeleteProfeGrupo = "DELETE FROM ProfeGRupo WHERE F_GruCuat=@idGruCuat;";
+            AccesoDatosSql.Modificar(queryDeleteProfeGrupo, sqlParametersDep2, ref mensaje);
+            // eliminar GrupoCuatrimestre
+            string queryDeleteGrupoCuatri = "DELETE FROM GrupoCuatrimestre WHERE Id_GruCuat=@idGruCuat; ";
+            result = AccesoDatosSql.Modificar(queryDeleteGrupoCuatri, sqlParametersDel, ref mensaje);
             return result;
         }
 
@@ -274,18 +291,20 @@ namespace ClassLogicaNegocios
             List<GrupoCuatrimestre> listGrupoCuatri = null;
             string query = "SELECT * FROM GrupoCuatrimestre;";
             SqlParameter[] sqlParameters = null;
-            DataSet dataAlumnos = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
-            if (dataAlumnos != null)
+            DataSet dataGrupoCuatri = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
+            if (dataGrupoCuatri != null)
             {
                 listGrupoCuatri = new List<GrupoCuatrimestre>();
-                foreach (DataRow row in dataAlumnos.Tables[0].Rows)
-                {
+                foreach (DataRow row in dataGrupoCuatri.Tables[0].Rows)
+                {                   
+                    if ((object)row[6].ToString() == "")
+                        row[6] = "";
                     listGrupoCuatri.Add(new GrupoCuatrimestre()
                     {
                         id = (int)row[0],
-                        f_progEdu = (int)row[1],
-                        f_grupo = (int)row[2],
-                        f_cuatri = (int)row[3],
+                        f_progEdu = Convert.ToByte(row[1]),
+                        f_grupo = Convert.ToInt16(row[2]),
+                        f_cuatri = Convert.ToInt16(row[3]),
                         turno = (string)row[4],
                         modalidad = (string)row[5],
                         extra = (string)row[6]
@@ -303,22 +322,74 @@ namespace ClassLogicaNegocios
                 "FROM GrupoCuatrimestre GC JOIN ProgramaEducativo PE ON GC.F_ProgEd = PE.Id_pe" +
                 "JOIN Grupo G ON GC.F_Grupo = G.Id_grupo JOIN Cuatrimestre C ON GC.F_Cuatri = C.id_Cuatrimestre;";
             SqlParameter[] sqlParameters = null;
-            DataSet dataAlumnos = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
-            if (dataAlumnos != null)
+            DataSet dataGrupoCuatri = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
+            if (dataGrupoCuatri != null)
             {
                 listGrupoCuatri = new List<GrupoCuatrimestre>();
-                foreach (DataRow row in dataAlumnos.Tables[0].Rows)
+                foreach (DataRow row in dataGrupoCuatri.Tables[0].Rows)
                 {
                     listGrupoCuatri.Add(new GrupoCuatrimestre()
                     {
                         id = (int)row[0],
-                        f_progEdu = (int)row[1],
-                        f_grupo = (int)row[2],
-                        f_cuatri = (int)row[3]
+                        f_progEdu = Convert.ToByte(row[1]),
+                        f_grupo = Convert.ToInt16(row[2]),
+                        f_cuatri = Convert.ToInt16(row[3])
                     });
                 }
             }
             return listGrupoCuatri;
+        }
+
+        // regla para obtener colección de grupos en ListItems para listbox
+        public List<Grupo> obtenerColeccionGrupo(ref string mensaje)
+        {
+            List<Grupo> listGrupo = null;
+            string query = "select * from Grupo;";
+            SqlParameter[] sqlParameters = null;
+            DataSet dataGrupo = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
+            if (dataGrupo != null)
+            {
+                listGrupo = new List<Grupo>();
+                foreach (DataRow row in dataGrupo.Tables[0].Rows)
+                {
+                    if ((object)row[3].ToString() == "")
+                        row[3] = "";
+                    listGrupo.Add(new Grupo()
+                    {
+                        id = Convert.ToInt16(row[0]),
+                        grado=Convert.ToByte(row[1]),
+                        letra = (string)row[2],
+                        extra=(string)row[3]
+                    });
+                }
+            }
+            return listGrupo;
+        }
+
+        // regla para obtener colección de programas educativos en ListItems para listbox
+        public List<ProgramaEducativo> obtenerColeccionProgrEd(ref string mensaje)
+        {
+            List<ProgramaEducativo> listProgEd = null;
+            string query = "SELECT * FROM ProgramaEducativo;";
+            SqlParameter[] sqlParameters = null;
+            DataSet dataProgEd = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
+            if (dataProgEd != null)
+            {
+                listProgEd = new List<ProgramaEducativo>();
+                foreach (DataRow row in dataProgEd.Tables[0].Rows)
+                {
+                    if ((object)row[3].ToString() == "")
+                        row[3] = "";
+                    listProgEd.Add(new ProgramaEducativo()
+                    {
+                        id = Convert.ToByte(row[0]),
+                        programaEd = (string)row[1],
+                        f_carrera = (int)row[2],
+                        extra=(string)row[3]
+                    });
+                }
+            }
+            return listProgEd;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ClassAccesoDatos;
 using ClassEntidades;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -311,6 +312,36 @@ namespace ClassLogicaNegocios
             return result;
 
 
+        }
+
+
+        public DataSet DevolverCasosPositivosCovid()
+        {
+            string msg="";
+            string querySql = "SELECT Id_posProfe as Num_Registro, FechaConfirmado as Fecha_confirmacion," +
+                "Antecedentes,NumContagio,Extra,F_Profe,Reisgo as Nivel_Riesgo FROM PositivoProfe " +
+                "ORDER BY Id_posProfe DESC";
+            SqlParameter[] sqlParameters = null;
+            return this.AccesoDatosSql.ConsultaDS(querySql, sqlParameters, ref msg);
+        }
+
+        public List<string> DevolverRutasdeCasosCovid()
+        {
+            string msg = "";
+            List<string> list=null;
+            string querySql = "SELECT Comprobacion FROM PositivoProfe ORDER BY Id_posProfe DESC";
+            SqlParameter[] sqlParameters = null;
+            SqlDataReader sqlDataReader= this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref msg);
+            if(sqlDataReader.HasRows)
+            {
+                list = new List<string>();
+                while(sqlDataReader.Read())
+                {
+                    list.Add(sqlDataReader.GetString(0));
+                }
+            }
+            this.AccesoDatosSql.CerrarConexion();
+            return list;
         }
 
         /* Métodos para SeguimientoProfesor */

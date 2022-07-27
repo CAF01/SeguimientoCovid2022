@@ -46,6 +46,7 @@
     <Compile Include="Cuatrimestre.cs" />
     <Compile Include="FiltroProgramaPeriodo.cs" />
     <Compile Include="FiltroSeguimientoProfesor.cs" />
+    <Compile Include="Grupo.cs" />
     <Compile Include="GrupoCuatrimestre.cs" />
     <Compile Include="Incapacidad.cs" />
     <Compile Include="Medico.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="PositivoProfe.cs" />
     <Compile Include="ProfeGrupo.cs" />
     <Compile Include="Profesor.cs" />
+    <Compile Include="ProgramaEducativo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SeguimientoAlumno.cs" />
     <Compile Include="SeguimientoProfesor.cs" />

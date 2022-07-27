@@ -11,8 +11,8 @@ namespace ClassEntidades
         public int id { set; get; }
         public string periodo { set; get; }
         public int anio { set; get; }
-        public string fechaInicio { set; get; }
-        public string fechaFin { set; get; }
+        public DateTime fechaInicio { set; get; }
+        public DateTime fechaFin { set; get; }
         public string extra { set; get; }
 
         public string datosCuatrimestre()

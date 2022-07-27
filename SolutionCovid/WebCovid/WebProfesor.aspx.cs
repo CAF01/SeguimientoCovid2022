@@ -52,31 +52,41 @@ namespace WebCovid
 
         }
 
+        public void EnviaAlertas(string titulo, string msg, string tipo)
+        {
+            Page.ClientScript.RegisterStartupScript(this.GetType(), titulo, String.Format("registro('{0}','{1}','{2}')", titulo, msg, tipo), true);
+        }
+
 
         protected void BTN1_Click(object sender, EventArgs e)
         {
-            if(!String.IsNullOrEmpty(TB1.Text) || !String.IsNullOrEmpty(TB2.Text) || !String.IsNullOrEmpty(TB3.Text)
-                || !String.IsNullOrEmpty(TB4.Text))
+            if(!String.IsNullOrEmpty(TB1.Text) && !String.IsNullOrEmpty(TB2.Text) && !String.IsNullOrEmpty(TB3.Text)
+                && !String.IsNullOrEmpty(TB4.Text))
             {
                 if(DDLCat.SelectedIndex<0 || DDLEDO.SelectedIndex <0 || DDLGen.SelectedIndex <0)
                 {
-                    //error por selección
+                    this.EnviaAlertas("Error!", "Es necesario completar los campos de selección para la Categoria, Estado Civil y Genero", "error");
                 }
+                else
                 {
-                    //insertar
-                    _ = this.NegociosProfesor.AgregarProfesor(new Profesor()
+                    string Cat = "";
+                    _ = DDLCat.SelectedItem.Text == "Profesor de tiempo Completo" ? Cat = "PTC" : Cat = "PA";
+                    bool flag = this.NegociosProfesor.AgregarProfesor(new Profesor()
                     {
                         RegistroEmpleado = Convert.ToInt32(TB1.Text),
                         Nombre = TB2.Text,
                         ap_pat = TB3.Text,
                         ap_mat = TB4.Text,
-                        Genero = DDLGen.SelectedValue,
-                        Categoria = DDLCat.SelectedValue,
+                        Genero = DDLGen.SelectedItem.Text,
+                        Categoria = Cat,
                         Correo = TB5.Text,
                         Celular = TB6.Text,
-                        F_EdoCivil = Convert.ToByte(DDLEDO.SelectedValue) // Pudiera dar eerror
-                    }) ? true : false;
-
+                        F_EdoCivil = Convert.ToByte(DDLEDO.SelectedValue)
+                    });
+                    if (flag)
+                        this.EnviaAlertas("Correcto!", "¡Nuevo Profesor agregado!", "success");
+                    else
+                        this.EnviaAlertas("OOps!", "¡Algo fallo con el registro!", "info");
                     TB1.Text = ""; TB2.Text = ""; TB3.Text = ""; TB4.Text = ""; TB5.Text = ""; TB6.Text = "";
                     DDLCat.SelectedIndex = 0; DDLEDO.SelectedIndex = 0; DDLGen.SelectedIndex = 0;
 
@@ -84,7 +94,7 @@ namespace WebCovid
             }
             else
             {
-                //mensaje por falta de campos
+                this.EnviaAlertas("Error!", "Es necesario llenar los campos obligatorios, excepto CORREO y TELEFONO", "error");
             }
         }
 
@@ -100,7 +110,7 @@ namespace WebCovid
         {
             if(String.IsNullOrEmpty(TBNom.Text) && String.IsNullOrEmpty(TBAp.Text))
             {
-                //No pueden estar ambos vacios
+                this.EnviaAlertas("Fallo al buscar", "Es necesario al menos el nombre o el apellido para realizar la busqueda", "info");
             }
             else
             {
@@ -122,19 +132,27 @@ namespace WebCovid
                 }
                   
                 List<Profesor> list = this.NegociosProfesor.BuscarProfesorPorNombres(profesor);
-                if(list!=null && list.Count > 0)
+                if (list != null && list.Count > 0)
                 {
                     AparecerControlesdeResultado();
                     ListItem Item;
                     foreach (Profesor profesorList in list)
                     {
                         Item = new ListItem();
-                        Item.Text = String.Format("Profesor: {0} {1}, Registro de Empleado: {2} ",profesorList.Nombre, profesorList.ap_pat, profesorList.RegistroEmpleado);
+                        Item.Text = String.Format("Profesor: {0} {1}, Registro de Empleado: {2} ", profesorList.Nombre, profesorList.ap_pat, profesorList.RegistroEmpleado);
                         Item.Value = profesorList.ID_Profe.ToString();
                         DDLProfs.Items.Add(Item);
                     }
                     this.EventoSeleccionProfBuscado(Convert.ToInt32(DDLProfs.Items[0].Value));
+                    this.EnviaAlertas("Busqueda exitosa!", "Los resultados estan disponibles en la tarjeta de actualización!", "success");
                 }
+                else
+                {
+                    this.EnviaAlertas("Error", "No se hallaron resultados con la busqueda indicada", "error");
+                    LBR.Visible = false;
+                    DDLProfs.Visible = false;
+                }
+                    
             }
         }
 
@@ -158,8 +176,6 @@ namespace WebCovid
                 DDLEDO.Items.Add(listItem);
                 DDLEDO2.Items.Add(listItem);
             }
-            //DDLEDO.SelectedIndex = 0;
-            //DDLEDO2.SelectedIndex = 0;
         }
 
         protected void DDLProfs_SelectedIndexChanged(object sender, EventArgs e)
@@ -167,8 +183,7 @@ namespace WebCovid
             if(DDLProfs.SelectedIndex >=0)
             {
                 this.EventoSeleccionProfBuscado(Convert.ToInt32(DDLProfs.SelectedValue));
-                //pendiente estadoCivil
-                //Mensaje de datos obtenidos
+                this.EnviaAlertas("Correcto!", "Datos obtenidos y listos para actualizar o eliminar en la tarjeta de actualización", "success");
             }
         }
 
@@ -186,6 +201,21 @@ namespace WebCovid
             DDLEDO2.SelectedIndex = DDLEDO2.Items.IndexOf(DDLEDO2.Items.FindByValue(p.F_EdoCivil.ToString()));
         }
 
+        public void LimpiarControlesMod()
+        {
+            TB12.Text = "";
+            TB22.Text = "";
+            TB32.Text = "";
+            TB42.Text = "";
+            TB52.Text = "";
+            TB62.Text = "";
+            DDL2.SelectedIndex = 0;
+            DDLCat2.SelectedIndex = 0;
+            DDLEDO2.SelectedIndex = 0;
+            LBR.Visible = false;
+            DDLProfs.Visible = false;
+        }
+
         protected void BTNDel_Click(object sender, EventArgs e)
         {
             if(DDLProfs.SelectedIndex>=0)
@@ -193,16 +223,17 @@ namespace WebCovid
                 int idProf = Convert.ToInt32(DDLProfs.SelectedValue);
                 if(this.NegociosProfesor.EliminarProfesor(idProf))
                 {
-                    //Limpiar controles
+                    this.LimpiarControlesMod();
+                    this.EnviaAlertas("Eliminado!", "El profesor se eliminó correctamente", "success");
                 }
                 else
                 {
-                    //error
+                    this.EnviaAlertas("OOps!!", "No se pudo ejecutar la eliminación", "error");
                 }
             }
             else
             {
-                //Se debe seleccionar un profesor
+                this.EnviaAlertas("Información!", "Es necesario seleccionar un profesor del resultado de busqueda", "info");
             }
         }
 
@@ -212,17 +243,16 @@ namespace WebCovid
             {
                 int idProf = Convert.ToInt32(DDLProfs.SelectedValue);
 
-                if (!String.IsNullOrEmpty(TB12.Text) || !String.IsNullOrEmpty(TB22.Text) || !String.IsNullOrEmpty(TB32.Text)
-                || !String.IsNullOrEmpty(TB42.Text))
+                if (!String.IsNullOrEmpty(TB12.Text) && !String.IsNullOrEmpty(TB22.Text) && !String.IsNullOrEmpty(TB32.Text)
+                && !String.IsNullOrEmpty(TB42.Text))
                 {
                     if (DDLCat2.SelectedIndex < 0 || DDLEDO2.SelectedIndex < 0 || DDL2.SelectedIndex < 0)
                     {
-                        //error por selección
+                        this.EnviaAlertas("Error!", "Es necesario completar los campos de selección para la Categoria, Estado Civil y Genero", "error");
                     }
                     {
                         string Cat = "";
                         _=DDLCat2.SelectedItem.Text == "Profesor de tiempo Completo" ? Cat = "PTC" : Cat = "PA";
-                        //insertar
                         Profesor profesorUpdated = new Profesor()
                         {
                             ID_Profe=idProf,
@@ -237,23 +267,21 @@ namespace WebCovid
                             F_EdoCivil = Convert.ToByte(DDLEDO2.SelectedValue)
                         };
                         if (this.NegociosProfesor.ActualizarProfesor(profesorUpdated))
-                        {
-                            //Limpiar controles
-                        }
+                            this.EnviaAlertas("Correcto!", "Datos de profesor actualizados correctamente", "success");
+                        else
+                            this.EnviaAlertas("Error", "No se pudo eliminar al profesor seleccionado", "error");
 
-                        TB1.Text = ""; TB2.Text = ""; TB3.Text = ""; TB4.Text = ""; TB5.Text = ""; TB6.Text = "";
-                        DDLCat.SelectedIndex = 0; DDLEDO.SelectedIndex = 0; DDLGen.SelectedIndex = 0;
-
+                        this.LimpiarControlesMod();
                     }
                 }
                 else
                 {
-                    //mensaje por falta de campos
+                    this.EnviaAlertas("Info!", "Es necesario completar los campos obligatorios, excepto CORREO y TELEFONO", "info");
                 }
             }
             else
             {
-                //Se debe seleccionar un profesor
+                this.EnviaAlertas("Info!", "Es necesario seleccionar a un profesor de la lista de resultados", "info");
             }
         }
     }

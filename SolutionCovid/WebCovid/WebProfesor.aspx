@@ -8,7 +8,8 @@
     <title>Sistema Seguimiento Covid</title>
     <link href="Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script src="Scripts/sweetalert2.min.js"></script>
-    <%--<link rel="Content/stylesheet" href="sweetalert2.min.css"/>--%><%--<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>--%>
+    <link rel="Content/stylesheet" href="sweetalert2.min.css"/>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sen&display=swap" rel="stylesheet"/>
     <style>
       body {
@@ -18,6 +19,16 @@
 </head>
 <body>
     <form id="form1" runat="server">
+        <script>
+                        function registro(alerta,mensaje, tipo)
+                        {
+                            Swal.fire(
+                                alerta,
+                                mensaje,
+                                tipo
+                            )
+                        }
+        </script>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
                <a class="navbar-brand" href="WebInicio.aspx">
@@ -126,7 +137,7 @@
                                                                 <label for="TB6">Celular</label>
                                                             </div>   
                                                             <div class="form-floating mb-3">
-                                                                <asp:DropDownList ID="DDLEDO" class="form-select" runat="server">
+                                                                <asp:DropDownList ID="DDLEDO" class="form-select" runat="server" AppendDataBoundItems="True">
                                                                 </asp:DropDownList>            
                                                                 <label for="DDLEDO">Estado Civil</label>
                                                             </div>   
@@ -266,7 +277,7 @@
                                                                     <label for="DDLCat2">Categoria</label>
                                                                 </div>   
                                                                 <div class="form-floating mb-3">
-                                                                    <asp:TextBox ID="TB52" runat="server" class="form-control"  TextMode="Email"></asp:TextBox>
+                                                                    <asp:TextBox ID="TB52" runat="server" class="form-control" ></asp:TextBox>
                                                                     <label for="TB52">Correo</label>
                                                                 </div> 
                                                                 <div class="form-floating mb-3">

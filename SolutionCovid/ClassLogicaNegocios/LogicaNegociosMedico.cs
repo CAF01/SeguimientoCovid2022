@@ -20,7 +20,7 @@ namespace ClassLogicaNegocios
         // regla para consultar datos de todos los medicos
         public DataSet consultarMedicos(ref string mensaje)
         {
-            string query = "SELECT * FROM Medico;";
+            string query = "SELECT ID_Dr AS Registro,Nombre,App,Apm,Telefono,Correo,Especialidad,Extra as Nota FROM Medico;";
             SqlParameter[] sqlParameters = null;
             DataSet result = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
             if (result != null) { return result; }
@@ -103,15 +103,24 @@ namespace ClassLogicaNegocios
             {
                 new SqlParameter("idMedico", idMedico)
             };
+            SqlParameter[] sqlParameters1 = new SqlParameter[]
+            {
+                new SqlParameter("idMedico", idMedico)
+            };
+            SqlParameter[] sqlParameters2 = new SqlParameter[]
+            {
+                new SqlParameter("idMedico", idMedico)
+            };
 
+            //eliminar SeguimientoAlumno
             string queryDeleteSegAlumno = "DELETE SeguimientoAL WHERE F_medico=@idMedico;";
             AccesoDatosSql.Modificar(queryDeleteSegAlumno, sqlParameters, ref mensaje);
             // eliminar SeguimientoProfe
             string queryDeleteSegProfe = "DELETE SeguimientoPRO WHERE F_medico=@idMedico;";
-            AccesoDatosSql.Modificar(queryDeleteSegProfe, sqlParameters, ref mensaje);
+            AccesoDatosSql.Modificar(queryDeleteSegProfe, sqlParameters1, ref mensaje);
             // eliminar Medico
             string queryDeleteMedico = "DELETE Medico WHERE ID_Dr=@idMedico";
-            result = AccesoDatosSql.Modificar(queryDeleteMedico, sqlParameters, ref mensaje);
+            result = AccesoDatosSql.Modificar(queryDeleteMedico, sqlParameters2, ref mensaje);
 
             return result;
         }
@@ -128,6 +137,14 @@ namespace ClassLogicaNegocios
                 listMedicos = new List<Medico>();
                 foreach (DataRow row in dataMedicos.Tables[0].Rows)
                 {
+                    if ((object)row[8].ToString() == "")
+                        row[8] = "";
+                    if ((object)row[3].ToString() == "")
+                        row[3] = "";
+                    if ((object)row[7].ToString() == "")
+                        row[7] = "";
+                    if ((object)row[7].ToString() == "")
+                        row[6] = "";
                     listMedicos.Add(new Medico()
                     {
                         id = (int)row[0],

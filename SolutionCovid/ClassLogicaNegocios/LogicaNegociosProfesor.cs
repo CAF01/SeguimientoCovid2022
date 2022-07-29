@@ -292,7 +292,7 @@ namespace ClassLogicaNegocios
             return this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
         }
 
-        public bool EliminarCasoPositivo(int idPositivo) // Tal vez falle este método
+        public bool EliminarCasoPositivo(int idPositivo)
         {
             string querySql = "DELETE FROM SeguimientoPRO WHERE F_positivoProfe=@id";
             SqlParameter[] sqlParameters = new SqlParameter[]
@@ -301,11 +301,19 @@ namespace ClassLogicaNegocios
             };
             this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
             querySql = "DELETE FROM Incapacidad WHERE id_posProfe=@id";
+            SqlParameter[] sqlParameters1 = new SqlParameter[]
+ {
+                new SqlParameter("id",idPositivo)
+ };
 
-            this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
+            this.AccesoDatosSql.Modificar(querySql, sqlParameters1, ref querySql);
             querySql = "DELETE FROM PositivoProfe WHERE ID_ProfeGru=@id";
+            SqlParameter[] sqlParameters2 = new SqlParameter[]
+ {
+                new SqlParameter("id",idPositivo)
+ };
 
-            bool result = this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
+            bool result = this.AccesoDatosSql.Modificar(querySql, sqlParameters2, ref querySql);
 
             this.AccesoDatosSql.CerrarConexion();
 
@@ -314,13 +322,10 @@ namespace ClassLogicaNegocios
 
         }
 
-
         public DataSet DevolverCasosPositivosCovid()
         {
             string msg="";
-            string querySql = "SELECT Id_posProfe as Num_Registro, FechaConfirmado as Fecha_confirmacion," +
-                "Antecedentes,NumContagio,Extra,F_Profe,Reisgo as Nivel_Riesgo FROM PositivoProfe " +
-                "ORDER BY Id_posProfe DESC";
+            string querySql = "SELECT PP.Id_posProfe as Num_Registro, PP.FechaConfirmado as Fecha_confirmacion,PP.Antecedentes,PP.NumContagio,PP.Extra,PP.F_Profe as Registro_Profesor,PP.Reisgo as Nivel_Riesgo, (P.Nombre+' '+P.Ap_pat) AS Profesor, P.Genero,P.RegistroEmpleado FROM PositivoProfe PP INNER JOIN Profesor P ON P.ID_Profe=PP.F_Profe ORDER BY Id_posProfe DESC";
             SqlParameter[] sqlParameters = null;
             return this.AccesoDatosSql.ConsultaDS(querySql, sqlParameters, ref msg);
         }
@@ -344,7 +349,17 @@ namespace ClassLogicaNegocios
             return list;
         }
 
+
+
         /* Métodos para SeguimientoProfesor */
+
+        public DataSet MostrarCasosPositivosConFiltro()
+        {
+            string querySql = "SELECT PP.Id_posProfe AS Registro_Positivo, P.ID_Profe AS Registro_Profesor, (P.Nombre+' '+P.Ap_pat+' '+P.Ap_Mat) AS Profesor,P.Genero, PP.FechaConfirmado AS Caso_Confirmado,PP.Reisgo AS Nivel_Riesgo,PP.Antecedentes,PP.NumContagio,PP.Extra FROM PositivoProfe PP INNER JOIN Profesor P ON P.ID_Profe=PP.F_Profe";
+            SqlParameter[] sqlParameters = null;
+            return this.AccesoDatosSql.ConsultaDS(querySql, sqlParameters, ref querySql);
+        }
+
 
         public bool AgregarSeguimientoCaso(SeguimientoProfesor seguimientoProfesor)
         {
@@ -365,12 +380,11 @@ namespace ClassLogicaNegocios
 
         public bool ModificarSeguimientoCaso(SeguimientoProfesor seguimientoProfesor)
         {
-            string querySql = "UPDATE SeguimientoPRO SET F_positivoProfe=@PosProf,F_medico=@Med,Fecha=@Fech," +
+            string querySql = "UPDATE SeguimientoPRO SET F_medico=@Med,Fecha=@Fech," +
                 "Form_Comunica=@FormC,Reporte=@Report,Entrevista=@Entre,Extra=@Ex WHERE id_Segui=@id";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
                 new SqlParameter("id",seguimientoProfesor.id_Segui),
-                new SqlParameter("PosProf",seguimientoProfesor.F_positivoProfe),
                 new SqlParameter("Med",seguimientoProfesor.F_medico),
                 new SqlParameter("Fech",seguimientoProfesor.Fecha),
                 new SqlParameter("FormC",seguimientoProfesor.Form_Comunica),
@@ -381,15 +395,15 @@ namespace ClassLogicaNegocios
             return this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
         }
 
-        //public bool EliminarSeguimientoCaso(int idSeguimiento) // Es necesario pensar los controles para el método
-        //{
-        //    string querySql = "DELETE FROM SeguimientoPRO WHERE F_positivoProfe=@id";
-        //    SqlParameter[] sqlParameters = new SqlParameter[]
-        //    {
-        //        new SqlParameter("id",idPositivo)
-        //    };
-        //    this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
-        //}
+        public bool EliminarSeguimientoCaso(int idSeguimiento) // Es necesario pensar los controles para el método
+        {
+            string querySql = "DELETE FROM SeguimientoPRO WHERE id_Segui=@id";
+            SqlParameter[] sqlParameters = new SqlParameter[]
+            {
+                new SqlParameter("id",idSeguimiento)
+            };
+            return this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
+        }
 
         public List<SeguimientoProfesor> MostrarSeguimientoDeCaso(int idCasoPositivo)
         {
@@ -546,6 +560,7 @@ namespace ClassLogicaNegocios
                 list = new List<FiltroSeguimientoProfesor>();
                 while (reader.Read())
                 {
+                    //Va a tronar valores nulos
                     list.Add(new FiltroSeguimientoProfesor()
                     {
                         id_Segui = reader.GetInt32(0),
@@ -587,6 +602,70 @@ namespace ClassLogicaNegocios
             this.AccesoDatosSql.CerrarConexion();
             return list;
         }
+
+        //Metodos para incapacidad
+        public bool AgregarIncapacidad(Incapacidad incapacidad)
+        {
+            string querySql = "INSERT INTO Incapacidad (Fecha_otorga,Fecha_finalizacion,IncapacidadUrl,id_posProfe) VALUES (@FO,@FF,@Url,@id);";
+            SqlParameter[] sqlParameters = new SqlParameter[]
+            {
+                new SqlParameter("FO",incapacidad.Fecha_otorga),
+                new SqlParameter("FF",incapacidad.Fecha_finalizacion),
+                new SqlParameter("Url",incapacidad.IncapacidadUrl),
+                new SqlParameter("id",incapacidad.id_posProfe),
+            };
+            return this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
+        }
+
+        public bool ModificarIncapacidad(Incapacidad incapacidad)
+        {
+            string querySql = "UPDATE Incapacidad SET Fecha_otorga=@FO,Fecha_finalizacion=@FF," +
+                "IncapacidadUrl=@Url WHERE id_Incapacidad=@id;";
+            SqlParameter[] sqlParameters = new SqlParameter[]
+            {
+                new SqlParameter("FO",incapacidad.Fecha_otorga),
+                new SqlParameter("FF",incapacidad.Fecha_finalizacion),
+                new SqlParameter("Url",incapacidad.IncapacidadUrl),
+                new SqlParameter("id",incapacidad.id_Incapacidad),
+            };
+            return this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
+        }
+
+        public DataSet MostrarIncapacidadesPorCaso(int idCasoPositivo,List<string> urls)
+        {
+            string querySql = "SELECT IncapacidadUrl FROM Incapacidad WHERE id_posProfe=@id";
+            SqlParameter[] sqlParameters = new SqlParameter[]
+            {
+                new SqlParameter("id",idCasoPositivo)
+            };
+            SqlDataReader sqlDataReader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
+            if(sqlDataReader.HasRows)
+            {
+                while(sqlDataReader.Read())
+                {
+                    urls.Add(sqlDataReader.GetString(0));
+                }
+            }
+            this.AccesoDatosSql.CerrarConexion();
+            querySql = "SELECT I.id_Incapacidad Registro_Incapacidad, I.Fecha_otorga,I.Fecha_finalizacion,PP.FechaConfirmado Fecha_Caso_Confirmado,PP.Reisgo Nivel_Riesgo FROM Incapacidad I INNER JOIN PositivoProfe PP ON PP.Id_posProfe = I.id_posProfe WHERE PP.Id_posProfe = @id";
+            SqlParameter[] sqlParameters1 = new SqlParameter[]
+            {
+                new SqlParameter("id",idCasoPositivo)
+            };
+            return this.AccesoDatosSql.ConsultaDS(querySql, sqlParameters1, ref querySql);
+        }
+
+        public bool EliminarIncapacidad(int idIncapacidad)
+        {
+            string querySql = "DELETE FROM INCAPACIDAD WHERE id_Incapacidad=@id";
+            SqlParameter[] sqlParameters = new SqlParameter[]
+            {
+                new SqlParameter("id",idIncapacidad),
+            };
+            return this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
+        }
+
+
 
 
 

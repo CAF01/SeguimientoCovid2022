@@ -58,7 +58,7 @@
           </nav>
 
 
-
+        
 
             <div class="form-group">
             <br />
@@ -178,36 +178,31 @@
                                                     <div class="row align-items-start">
                                                           <div class="d-grid gap-2 col-4 mx-auto">
                                                             <asp:Button ID="BTNTabla" class="btn text-light bg-secondary mb-2 btn-lg" runat="server" Text="Actualizar datos" OnClick="BTNTabla_Click"/>
+                                                            <br />
+                                                              <%--aqui va--%> 
+                                                             <asp:GridView ID="GVProfesor" runat="server" BackColor="White" BorderColor="#E7E7FF" BorderStyle="None" BorderWidth="1px" CellPadding="3" PageSize="5" ShowFooter="True" OnSelectedIndexChanged="GVProfesor_SelectedIndexChanged">
+                                                                <AlternatingRowStyle BackColor="#F7F7F7" />
+                                                                <Columns>
+                                                                    <asp:CommandField ButtonType="Button" SelectText="Más información" ShowSelectButton="True" />
+                                                                </Columns>
+                                                                <FooterStyle BackColor="#B5C7DE" ForeColor="#4A3C8C" />
+                                                                <HeaderStyle BackColor="#4A3C8C" Font-Bold="True" ForeColor="#F7F7F7" />
+                                                                <PagerStyle BackColor="#E7E7FF" ForeColor="#4A3C8C" HorizontalAlign="Right" />
+                                                                <RowStyle BackColor="#E7E7FF" ForeColor="#4A3C8C" />
+                                                                <SelectedRowStyle BackColor="#6666FF" Font-Bold="True" ForeColor="White" />
+                                                                <SortedAscendingCellStyle BackColor="#F4F4FD" />
+                                                                <SortedAscendingHeaderStyle BackColor="#5A4C9D" />
+                                                                <SortedDescendingCellStyle BackColor="#D8D8F0" />
+                                                                <SortedDescendingHeaderStyle BackColor="#3E3277" />
+                                                            </asp:GridView>   
                                                           </div>
                                                      </div>
 
                                                     <br />
 
-                                                    <asp:GridView ID="GVProfesor" runat="server" BackColor="White" BorderColor="#E7E7FF" BorderStyle="None" BorderWidth="1px" CellPadding="3" PageSize="5" ShowFooter="True">
-                                                        <AlternatingRowStyle BackColor="#F7F7F7" />
-                                                        <FooterStyle BackColor="#B5C7DE" ForeColor="#4A3C8C" />
-                                                        <HeaderStyle BackColor="#4A3C8C" Font-Bold="True" ForeColor="#F7F7F7" />
-                                                        <PagerStyle BackColor="#E7E7FF" ForeColor="#4A3C8C" HorizontalAlign="Right" />
-                                                        <RowStyle BackColor="#E7E7FF" ForeColor="#4A3C8C" />
-                                                        <SelectedRowStyle BackColor="#6666FF" Font-Bold="True" ForeColor="White" />
-                                                        <SortedAscendingCellStyle BackColor="#F4F4FD" />
-                                                        <SortedAscendingHeaderStyle BackColor="#5A4C9D" />
-                                                        <SortedDescendingCellStyle BackColor="#D8D8F0" />
-                                                        <SortedDescendingHeaderStyle BackColor="#3E3277" />
-                                                    </asp:GridView>
-
-
-
-
-                                                      <%--<label for="TB1">Nombre de archivo</label>--%>
+   
                                                 </div>
-                                                <%--                                                <div class="row align-items-start">
-                                                    <div class="row">
-                                                        <div class="d-grid gap-2 col-4 mx-auto">
-                                                           
-                                                        </div> 
-                                                    </div>
-                                                </div>--%>
+                                               
 
 
                                           </div>

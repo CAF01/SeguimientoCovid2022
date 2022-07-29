@@ -3,8 +3,6 @@ using ClassLogicaNegocios;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -223,6 +221,9 @@ namespace WebCovid
                 int idProf = Convert.ToInt32(DDLProfs.SelectedValue);
                 if(this.NegociosProfesor.EliminarProfesor(idProf))
                 {
+                    //int index = this.Profesors.FindIndex(x => x.ID_Profe == idProf);
+                    //this.Profesors.RemoveAt(index);
+                    this.SaveInfoProf();
                     this.LimpiarControlesMod();
                     this.EnviaAlertas("Eliminado!", "El profesor se eliminó correctamente", "success");
                 }
@@ -267,7 +268,14 @@ namespace WebCovid
                             F_EdoCivil = Convert.ToByte(DDLEDO2.SelectedValue)
                         };
                         if (this.NegociosProfesor.ActualizarProfesor(profesorUpdated))
+                        {
+                            //int index = this.Profesors.FindIndex(x => x.ID_Profe == idProf);
+                            //this.Profesors[index] = profesorUpdated;
+                            this.SaveInfoProf();
                             this.EnviaAlertas("Correcto!", "Datos de profesor actualizados correctamente", "success");
+
+                        }
+                            
                         else
                             this.EnviaAlertas("Error", "No se pudo eliminar al profesor seleccionado", "error");
 
@@ -283,6 +291,29 @@ namespace WebCovid
             {
                 this.EnviaAlertas("Info!", "Es necesario seleccionar a un profesor de la lista de resultados", "info");
             }
+        }
+
+
+        protected void GVProfesor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(GVProfesor.SelectedIndex>=0)
+            {
+                Profesor profesor = this.Profesors[GVProfesor.SelectedIndex];
+                if (profesor.Correo != "" || profesor.Celular != "")
+                    this.EnviaAlertas("Información de contacto", String.Format("Correo:{0}, Telefono:{1}", profesor.Correo, profesor.Celular), "info");
+                else
+                    this.EnviaAlertas("Información no encontrada", "Profesor seleccionado no cuenta con información de contacto", "error");
+            }
+        }
+
+        public void SaveInfoProf()
+        {
+            string msg = "";
+            this.Profesors = this.NegociosProfesor.MostrarProfesores();
+            Session["Profs"] = this.Profesors;
+            GVProfesor.DataSource = this.NegociosProfesor.MostrarProfesoresPocaInfo(ref msg);
+            GVProfesor.DataBind();
+            GVProfesor.SelectedIndex = -1;
         }
     }
 }

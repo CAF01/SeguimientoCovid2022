@@ -10,7 +10,7 @@
     <script src="Scripts/sweetalert2.min.js"></script>
     <link rel="Content/stylesheet" href="sweetalert2.min.css"/>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Sen&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sen&display=swap" rel="stylesheet"/>
     <style>
       body {
         font-family: 'Sen', serif;

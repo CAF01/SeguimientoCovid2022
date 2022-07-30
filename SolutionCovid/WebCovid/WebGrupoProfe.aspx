@@ -31,7 +31,7 @@
          </script>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-               <a class="navbar-brand" href="WebInicio.aspx">
+               <a class="navbar-brand" href="WebMedico.aspx">
                     <img src="Resources/icono.png" alt="" width="50" height="50" class="d-inline-block align-text-top"/>
                         SEGUIMIENTO COVID
                </a>
@@ -41,17 +41,45 @@
               <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="WebProfesor.aspx">Profesor</a>
+                    <a class="nav-link" href="WebMedico.aspx">Gestión de Médicos</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="WebAlumno.aspx">Alumno</a>
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Gestión de Profesores
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="WebProfesor.aspx">Registros</a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item" href="WebPositivosProfe.aspx">Casos Positivos</a></li>
+                        <li><a class="dropdown-item" href="WebSeguimientoCasoProfe.aspx">Seguimiento de casos</a></li>
+                        <li><a class="dropdown-item" href="WebIncapacidad.aspx">Incapacidades</a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item" href="WebConsultasProfesor.aspx">Estadísticas de contagios</a></li>
+                      </ul>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="WebCuatrimestre.aspx">Cuatrimestre</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="WebMedico.aspx">Médico</a>
-                  </li>
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Gestión de Alumnos
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="WebAlumno.aspx">Registros</a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item" href="WebPositivoAlumno.aspx">Casos Positivos</a></li>
+                        <li><a class="dropdown-item" href="WebSeguimientoAlumno.aspx">Seguimiento de casos y Estadísticas</a></li>
+                      </ul>
+                  </li>  
+                  <li class="nav-item dropdown">
+                      <a class="nav-link active dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Grupos
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="WebCuatrimestre.aspx">Manejo de Cuatrimestres</a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item" href="WebGrupoProfe.aspx">Asignar profesores</a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item" href="WebAlumno.aspx">Asignar alumnos</a></li>
+                      </ul>
+                  </li>    
                 </ul>
               </div>
             </div>

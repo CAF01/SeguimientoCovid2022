@@ -9,13 +9,18 @@
     <link href="Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script src="Scripts/sweetalert2.min.js"></script>
     <link rel="Content/stylesheet" href="sweetalert2.min.css"/>
+    <script type="text/javascript">
+        function Alert(t, m, tipo) {
+            Swal.fire(t, m, tipo)
+        }
+    </script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sen&display=swap" rel="stylesheet"/>
     <style>
       body {
         font-family: 'Sen', serif;
       }
-    </style>
+    </style>    
 </head>
 <body>
     <form id="formAlumno" runat="server">
@@ -42,6 +47,18 @@
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="WebMedico.aspx">Médico</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="WebPositivoAlumno.aspx">Positivo Alumno</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="WebSeguimientoAlumno.aspx">Seguimiento Alumno</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="WebPositivosProfe.aspx">Positivo Profesor</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="WebSeguimientoCasoProfe.aspx">Seguimiento Profesor</a>
                   </li>
                 </ul>
               </div>
@@ -111,7 +128,7 @@
                                                             <label for="txtCelular">Celular</label>
                                                         </div>
                                                         <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlEdoCivil" runat="server" class="form-select"></asp:DropDownList>
+                                                            <asp:DropDownList ID="ddlEdoCivil" runat="server" class="form-select" AppendDataBoundItems="True"></asp:DropDownList>
                                                             <label for="ddlEdoCivil">Estado Civil</label>
                                                         </div>
                                                         <div class="row align-items-start">
@@ -139,11 +156,11 @@
                                                   <label for="DropDownList1" class="form-label fs-3 fw-semibold">Añadir alumno a grupo-cuatrimestre</label>
                                                   <div class="mb-3">
                                                       <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlAlumno" runat="server" class="form-select" data-toggle="dropdown"></asp:DropDownList> 
+                                                            <asp:DropDownList ID="ddlAlumno" runat="server" class="form-select" data-toggle="dropdown" AppendDataBoundItems="True"></asp:DropDownList> 
                                                             <label for="ddlAlumno">Alumno</label>
                                                         </div>
                                                         <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlGrupoCuatri" runat="server" class="form-select"></asp:DropDownList>
+                                                            <asp:DropDownList ID="ddlGrupoCuatri" runat="server" class="form-select" AppendDataBoundItems="True"></asp:DropDownList>
                                                             <label for="ddlGrupoCuatri">Grupo-Cuatrimestre</label>
                                                         </div>
                                                        
@@ -260,12 +277,12 @@
                                                             <label for="txtCelularA">Celular</label>
                                                         </div>
                                                         <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlEdoCivilA" runat="server" class="form-select"></asp:DropDownList>
+                                                            <asp:DropDownList ID="ddlEdoCivilA" runat="server" class="form-select" AppendDataBoundItems="True"></asp:DropDownList>
                                                             <label for="ddlEdoCivilA">Estado Civil</label>
                                                         </div>
                                                     <p>Para actualizar, selecciona el alumno dando clic sobre <b>Elegir alumno</b> y modifica los datos en el formulario, después da clic en el botón <b>Editar</b> correspondiente al registro del alumno.</p>
                                                     <p>Para eliminar un alumno, da clic en el botón <b>Eliminar</b> correspondiente al registro del alumno.</p>
-                                                    <asp:GridView ID="gvAlumnosAE" runat="server" CellPadding="4" ForeColor="#333333" GridLines="None" OnRowDeleting="gvAlumnosA_RowDeleting" OnRowUpdating="gvAlumnosA_RowUpdating" OnSelectedIndexChanging="gvAlumnosA_SelectedIndexChanging">
+                                                    <asp:GridView ID="gvAlumnosA" runat="server" CellPadding="4" ForeColor="#333333" GridLines="None" OnRowDeleting="gvAlumnosA_RowDeleting" OnRowUpdating="gvAlumnosA_RowUpdating" OnSelectedIndexChanging="gvAlumnosA_SelectedIndexChanging">
                                                         <AlternatingRowStyle BackColor="White" />
                                                         <Columns>
                                                             <asp:ButtonField ButtonType="Button" CommandName="Select" HeaderText="Selecciona" ShowHeader="True" Text="Elegir alumno" ControlStyle-CssClass="btn btn-outline-primary"/>
@@ -292,11 +309,11 @@
                                                 <div class="mb-3">
                                                     <h6><b>Datos del alumno de un grupo-cuatrimestre</b></h6>
                                                     <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlAlumnoA" runat="server" class="form-select" data-toggle="dropdown"></asp:DropDownList> 
+                                                            <asp:DropDownList ID="ddlAlumnoA" runat="server" class="form-select" data-toggle="dropdown" AppendDataBoundItems="True"></asp:DropDownList> 
                                                             <label for="ddlAlumnoA">Alumno</label>
                                                         </div>
                                                         <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlGrupoCuatriA" runat="server" class="form-select"></asp:DropDownList>
+                                                            <asp:DropDownList ID="ddlGrupoCuatriA" runat="server" class="form-select" AppendDataBoundItems="True"></asp:DropDownList>
                                                             <label for="ddlGrupoCuatriA">Grupo-Cuatrimestre</label>
                                                         </div>
                                                        
@@ -310,10 +327,10 @@
                                                         </div>
                                                         <p>Para actualizar, selecciona el alumno de un grupo-cuatrimestre dando clic sobre <b>Elegir alumno-grupo</b> y modifica los datos en el formulario, después da clic en el botón <b>Editar</b> correspondiente al registro del alumno de un grupo-cuatrimestre.</p>
                                                         <p>Para eliminar un alumno de un grupo-cuatrimestre, da clic en el botón <b>Eliminar</b> correspondiente al registro del grupo del alumno de un grupo-cuatrimestre.</p>
-                                                        <asp:GridView ID="gvAlumnosGruCuatriAE" runat="server" CellPadding="4" ForeColor="#333333" GridLines="None" OnRowDeleting="gvAlumnosGruCuatriA_RowDeleting" OnRowUpdating="gvAlumnosGruCuatriA_RowUpdating" OnSelectedIndexChanging="gvAlumnosGruCuatriA_SelectedIndexChanging">
+                                                        <asp:GridView ID="gvAlumnosGruCuatriA" runat="server" CellPadding="4" ForeColor="#333333" GridLines="None" OnRowDeleting="gvAlumnosGruCuatriA_RowDeleting" OnRowUpdating="gvAlumnosGruCuatriA_RowUpdating" OnSelectedIndexChanging="gvAlumnosGruCuatriA_SelectedIndexChanging">
                                                             <AlternatingRowStyle BackColor="White" />
                                                             <Columns>
-                                                                <asp:ButtonField ButtonType="Button" CommandName="Select" HeaderText="Selecciona" ShowHeader="True" Text="Elegir alumno-grupo" ControlStyle-CssClass="btn btn-outline-primary-"/>
+                                                                <asp:ButtonField ButtonType="Button" CommandName="Select" HeaderText="Selecciona" ShowHeader="True" Text="Elegir alumno-grupo" ControlStyle-CssClass="btn btn-outline-primary"/>
                                                                 <asp:ButtonField ButtonType="Button" CommandName="Delete" HeaderText="Elimina" ShowHeader="True" Text="Eliminar" ControlStyle-CssClass="btn btn-outline-danger"/>
                                                                 <asp:ButtonField ButtonType="Button" CommandName="Update" HeaderText="Edita" ShowHeader="True" Text="Editar" ControlStyle-CssClass="btn btn-outline-warning"/>
                                                             </Columns>
@@ -346,7 +363,7 @@
                     </div>
                      
             </div>           
-
+              
         </div>
     </form>
 </body>

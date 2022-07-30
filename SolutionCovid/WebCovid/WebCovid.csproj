@@ -104,8 +104,10 @@
     <Content Include="WebIncapacidad.aspx" />
     <Content Include="WebInicio.aspx" />
     <Content Include="WebMedico.aspx" />
-    <Content Include="WebPositivosProfe.aspx" />
+    <Content Include="WebPositivoAlumno.aspx" />
     <Content Include="WebProfesor.aspx" />
+    <Content Include="WebSeguimientoAlumno.aspx" />
+    <Content Include="WebPositivosProfe.aspx" />
     <Content Include="WebSeguimientoCasoProfe.aspx" />
   </ItemGroup>
   <ItemGroup>
@@ -152,10 +154,12 @@
     <Compile Include="WebMedico.aspx.designer.cs">
       <DependentUpon>WebMedico.aspx</DependentUpon>
     </Compile>
-    <Compile Include="WebPositivosProfe.aspx.cs">
-      <DependentUpon>WebPositivosProfe.aspx</DependentUpon>
+    <Compile Include="WebPositivoAlumno.aspx.cs">
+      <DependentUpon>WebPositivoAlumno.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="WebPositivoAlumno.aspx.designer.cs">
+      <DependentUpon>WebPositivoAlumno.aspx</DependentUpon>
     <Compile Include="WebPositivosProfe.aspx.designer.cs">
       <DependentUpon>WebPositivosProfe.aspx</DependentUpon>
     </Compile>
@@ -170,8 +174,9 @@
       <DependentUpon>WebSeguimientoCasoProfe.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="WebSeguimientoCasoProfe.aspx.designer.cs">
-      <DependentUpon>WebSeguimientoCasoProfe.aspx</DependentUpon>
+    <Compile Include="WebSeguimientoAlumno.aspx.cs">
+      <DependentUpon>WebSeguimientoAlumno.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

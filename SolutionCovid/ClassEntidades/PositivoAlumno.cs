@@ -9,7 +9,7 @@ namespace ClassEntidades
     public class PositivoAlumno
     {
         public int id { set; get; }
-        public string fechaConfirmado { set; get; }
+        public DateTime fechaConfirmado { set; get; }
         public string comprobacion { set; get; }
         public string antecedentes { set; get; }
         public string riesgo { set; get; }

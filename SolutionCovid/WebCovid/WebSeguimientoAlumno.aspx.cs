@@ -28,10 +28,10 @@ namespace WebCovid
             if (!IsPostBack)
             {
                 // ConnectionString Server = Server=20.187.117.181,1434;Database=SeguimientoCovidServer;User ID=sa;Password=admin1234;
-                objBLAlumno = new LogicaNegociosAlumno("Server=20.187.117.181,1434;Database=SeguimientoCovidServer;User ID=sa;Password=admin1234;");
+                objBLAlumno = new LogicaNegociosAlumno(ConfigurationManager.ConnectionStrings["conexSql"].ConnectionString);
                 //objBLAlumno = new LogicaNegociosAlumno(ConfigurationManager.ConnectionStrings["conexSql"].ConnectionString);
                 Session["objBLAlumno"] = objBLAlumno;
-                objBLCuatrimestre = new LogicaNegociosCuatrimestre("Server=20.187.117.181,1434;Database=SeguimientoCovidServer;User ID=sa;Password=admin1234;");
+                objBLCuatrimestre = new LogicaNegociosCuatrimestre(ConfigurationManager.ConnectionStrings["conexSql"].ConnectionString);
                 //objBLCuatrimestre = new LogicaNegociosCuatrimestre(ConfigurationManager.ConnectionStrings["conexSql"].ConnectionString);
                 Session["objBLCuatrimestre"] = objBLCuatrimestre;
                 listPosAl = objBLAlumno.obtenerColeccionPositivoAlumno(ref msj);

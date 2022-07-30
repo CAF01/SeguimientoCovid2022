@@ -167,6 +167,32 @@ namespace ClassLogicaNegocios
 
         }
 
+        public List<Profesor> MostrarProfesoresFiltro()
+        {
+            List<Profesor> list = null;
+            string querySql = "SELECT ID_Profe as Registro,RegistroEmpleado,Ap_pat+' '+Ap_Mat+ ' ' +Nombre as Nombre, Genero,Categoria FROM PROFESOR order by Categoria";
+            SqlParameter[] sqlParameters = null;
+            SqlDataReader sqlDataReader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
+            if (sqlDataReader != null && sqlDataReader.HasRows)
+            {
+                list = new List<Profesor>();
+                while (sqlDataReader.Read())
+                {
+                    list.Add(new Profesor()
+                    {
+                        ID_Profe = sqlDataReader.GetInt32(0),
+                        RegistroEmpleado = sqlDataReader.GetInt32(1),
+                        Nombre = sqlDataReader.GetString(2),
+                        Genero = sqlDataReader.GetString(3),
+                        Categoria = sqlDataReader.GetString(4),
+                    });
+                }
+            }
+            this.AccesoDatosSql.CerrarConexion();
+            return list;
+
+        }
+
         public DataSet MostrarProfesoresPocaInfo(ref string msg)
         {
             string querySql = "SELECT Nombre,Ap_pat + ' ' +Ap_Mat as Apellido, Genero,Categoria FROM PROFESOR";
@@ -179,7 +205,7 @@ namespace ClassLogicaNegocios
 
         public bool AgregarProfeGrupo(ProfeGrupo profeGrupo)
         {
-            string querySql = "INSERT INTO ProfeGRupo (F_Profe,F_GruCuat,Extra,Extra2) VALUES (@FProf,@FGrup,@Ex,Exx)";
+            string querySql = "INSERT INTO ProfeGRupo (F_Profe,F_GruCuat,Extra,Extra2) VALUES (@FProf,@FGrup,@Ex,@Exx)";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
                 new SqlParameter("FProf",profeGrupo.F_Profe),
@@ -657,6 +683,63 @@ namespace ClassLogicaNegocios
                 new SqlParameter("id",idIncapacidad),
             };
             return this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
+        }
+
+        public List<FiltroGrupoPeriodoCuatrimestre> ObtenerRegistrosGrupos(int idProgram)
+        {
+            string querySql = "SELECT GC.Id_GruCuat,(SELECT CONVERT(varchar(10), G.Grado)+' '+G.LETRA) AS Grupo,GC.Turno,GC.Modalidad,C.Periodo,C.Anio FROM GRUPOCUATRIMESTRE GC INNER JOIN ProgramaEducativo P ON P.Id_pe = GC.F_ProgEd INNER JOIN Cuatrimestre C ON C.id_Cuatrimestre = GC.F_Cuatri INNER JOIN Grupo G ON G.Id_grupo = GC.F_Grupo WHERE F_ProgEd=@id";
+            SqlParameter[] sqlParameters = new SqlParameter[]
+            {
+                new SqlParameter("id",idProgram)
+            };
+            List<FiltroGrupoPeriodoCuatrimestre> filtroGrupoPeriodoCuatrimestres=null;
+            SqlDataReader sqlDataReader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
+            if (sqlDataReader.HasRows)
+            {
+                filtroGrupoPeriodoCuatrimestres = new List<FiltroGrupoPeriodoCuatrimestre>();
+                while (sqlDataReader.Read())
+                {
+                    filtroGrupoPeriodoCuatrimestres.Add(new FiltroGrupoPeriodoCuatrimestre
+                    {
+                        id_GruCuat=sqlDataReader.GetInt32(0),
+                        Grupo=sqlDataReader.GetString(1),
+                        Turno=sqlDataReader.GetString(2),
+                        Modalidad=sqlDataReader.GetString(3),
+                        Periodo=sqlDataReader.GetString(4),
+                        Anio=sqlDataReader.GetInt32(5)
+                    });
+                }
+            }
+            this.AccesoDatosSql.CerrarConexion();
+            return filtroGrupoPeriodoCuatrimestres;
+        }
+
+        public string[] ConocerProfesordeGrupoProfe(int idGrupo)
+        {
+            string querySql = "SELECT PG.ID_ProfeGru,(P.Nombre+' '+P.Ap_pat+' '+P.Ap_Mat) Profesor, P.Categoria,PG.Extra,PG.Extra2,P.ID_Profe FROM ProfeGRupo PG INNER JOIN Profesor P ON P.ID_Profe = PG.F_Profe WHERE F_GruCuat = @id";
+            SqlParameter[] sqlParameters = new SqlParameter[]
+            {
+                new SqlParameter("id",idGrupo)
+            };
+            string[] Info = null;
+            SqlDataReader reader = AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
+            if (reader.HasRows)
+            {
+                string extra = "";
+                string extra2 = "";
+                reader.Read();
+                _ = string.IsNullOrEmpty(((object)reader[3]).ToString()) ? extra = "" : extra = (string)reader[3];
+                _ = string.IsNullOrEmpty(((object)reader[4]).ToString()) ? extra2 = "" : extra2 = (string)reader[4];
+                Info = new string[6];
+                Info[0] = reader.GetInt32(0).ToString();
+                Info[1] = reader.GetString(1);
+                Info[2] = reader.GetString(2);
+                Info[3] = extra;
+                Info[4] = extra2;
+                Info[5] = reader.GetInt32(5).ToString();
+            }
+            this.AccesoDatosSql.CerrarConexion();
+            return Info;
         }
 
 

@@ -11,7 +11,7 @@ namespace WebCovid
 {
 
 
-    public partial class WebSeguimientoCasoProfe
+    public partial class WebConsultasProfesor
     {
 
         /// <summary>
@@ -24,175 +24,175 @@ namespace WebCovid
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// GVPositivos control.
+        /// DDLProgram control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GVPositivos;
+        protected global::System.Web.UI.WebControls.DropDownList DDLProgram;
 
         /// <summary>
-        /// GVMedicos control.
+        /// DDLCuatri control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GVMedicos;
+        protected global::System.Web.UI.WebControls.DropDownList DDLCuatri;
 
         /// <summary>
-        /// DDLComunica control.
+        /// BTNMostrarDatos control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DDLComunica;
+        protected global::System.Web.UI.WebControls.Button BTNMostrarDatos;
 
         /// <summary>
-        /// TB1 control.
+        /// GVContagios control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TB1;
+        protected global::System.Web.UI.WebControls.GridView GVContagios;
 
         /// <summary>
-        /// TB2 control.
+        /// GVProfesores control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TB2;
+        protected global::System.Web.UI.WebControls.GridView GVProfesores;
 
         /// <summary>
-        /// TB3 control.
+        /// LBL1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TB3;
+        protected global::System.Web.UI.WebControls.Label LBL1;
 
         /// <summary>
-        /// BTNRegist control.
+        /// GVCasos control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BTNRegist;
+        protected global::System.Web.UI.WebControls.GridView GVCasos;
 
         /// <summary>
-        /// GVPositivos2 control.
+        /// LBL2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GVPositivos2;
+        protected global::System.Web.UI.WebControls.Label LBL2;
 
         /// <summary>
-        /// Label1 control.
+        /// BTNPrueba control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.WebControls.Button BTNPrueba;
 
         /// <summary>
-        /// DDLSeguimientos control.
+        /// Img1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DDLSeguimientos;
+        protected global::System.Web.UI.WebControls.Image Img1;
 
         /// <summary>
-        /// LbMed control.
+        /// LBL3 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LbMed;
+        protected global::System.Web.UI.WebControls.Label LBL3;
 
         /// <summary>
-        /// GVMed2 control.
+        /// BTNInca control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GVMed2;
+        protected global::System.Web.UI.WebControls.Button BTNInca;
 
         /// <summary>
-        /// Calendar control.
+        /// DDLInca control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Calendar Calendar;
+        protected global::System.Web.UI.WebControls.DropDownList DDLInca;
 
         /// <summary>
-        /// DDLComunica2 control.
+        /// LBL4 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DDLComunica2;
+        protected global::System.Web.UI.WebControls.Label LBL4;
 
         /// <summary>
-        /// TB12 control.
+        /// BTNShowInca control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TB12;
+        protected global::System.Web.UI.WebControls.Button BTNShowInca;
 
         /// <summary>
-        /// TB22 control.
+        /// Img2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TB22;
+        protected global::System.Web.UI.WebControls.Image Img2;
 
         /// <summary>
-        /// TB32 control.
+        /// LBL5 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TB32;
+        protected global::System.Web.UI.WebControls.Label LBL5;
 
         /// <summary>
-        /// BTNMod control.
+        /// BTNShowSegui control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BTNMod;
+        protected global::System.Web.UI.WebControls.Button BTNShowSegui;
 
         /// <summary>
-        /// BTNDel control.
+        /// GVSeguimientos control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BTNDel;
+        protected global::System.Web.UI.WebControls.GridView GVSeguimientos;
 
         /// <summary>
         /// smrTemplate control.

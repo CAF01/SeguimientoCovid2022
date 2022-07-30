@@ -11,7 +11,7 @@ namespace ClassEntidades
         public string ProgramaEd { get; set; }
         public int id_Cuatrimestre { get; set; }
         public string Periodo { get; set; }
-        public string Anio { get; set; }
+        public int Anio { get; set; }
         public int RegistroEmpleado { get; set; }
         public string Profesor { get; set; }
         public int Id_posProfe { get; set; }

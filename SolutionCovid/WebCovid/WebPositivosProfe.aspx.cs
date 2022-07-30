@@ -37,6 +37,7 @@ namespace WebCovid
                     MostrarDatosTabla();
                     Button1.Visible = false;
                 }
+                CalConfirma.SelectedDate = DateTime.Today;
             }
             else
             {
@@ -72,39 +73,35 @@ namespace WebCovid
                             {
                                 if(url=="FAKE")
                                     this.EnviaAlertas("error", "Solo se admiten archivos .png / .jpg / .pdf", "error");
-                                else
+                                if(url=="LARGE")
+                                    this.EnviaAlertas("error", "El archivo es demasiado grande", "error");
+                                if(url!="FAKE" && url!="LARGE")
                                 {
-                                      int idProf = this.Profesors[GVProfesor.SelectedIndex].ID_Profe;
-                                      PositivoProfe positivoProfe = new PositivoProfe()
-                                      {
-                                          FechaConfirmado = CalConfirma.SelectedDate,
-                                          Comprobacion = url,
-                                          Antecedentes = TB1.Text,
-                                          NumContagio = Convert.ToByte(TB2.Text),
-                                          Extra = TB3.Text,
-                                          F_Profe = idProf,
-                                          Riesgo = DDRiesgo.SelectedItem.Text
-                                      };
-                                      if (this.NegociosProfesor.AgregarCasoPositivo(positivoProfe))
-                                      {
-                                          this.EnviaAlertas("Correcto!", "Caso positivo agregado", "success");
+                                    int idProf = this.Profesors[GVProfesor.SelectedIndex].ID_Profe;
+                                    PositivoProfe positivoProfe = new PositivoProfe()
+                                    {
+                                        FechaConfirmado = CalConfirma.SelectedDate,
+                                        Comprobacion = url,
+                                        Antecedentes = TB1.Text,
+                                        NumContagio = Convert.ToByte(TB2.Text),
+                                        Extra = TB3.Text,
+                                        F_Profe = idProf,
+                                        Riesgo = DDRiesgo.SelectedItem.Text
+                                    };
+                                    if (this.NegociosProfesor.AgregarCasoPositivo(positivoProfe))
+                                    {
                                           this.comprobaciones = this.NegociosProfesor.DevolverRutasdeCasosCovid();
                                           Session["ListaComp"] = this.comprobaciones;
-                                      }
-                                      TB1.Text = ""; TB2.Text = ""; TB3.Text = ""; GVProfesor.SelectedIndex = -1;
+                                          this.EnviaAlertas("Correcto!", "Caso positivo agregado", "success");
+                                    }
+                                    TB1.Text = ""; TB2.Text = ""; TB3.Text = ""; GVProfesor.SelectedIndex = -1;
+                                    DDRiesgo.SelectedIndex = 0;  
                                 }
                                 
                             }
-                            else
-                            {
-                                this.EnviaAlertas("error", "Debe subir el archivo o imagen de validez", "error");
-                            }
                         }
                         else
-                        {
                             this.EnviaAlertas("error", "Es necesario indicar el número de contagio", "error");
-                        }
-
                     }
                     else
                         this.EnviaAlertas("error", "Debes seleccionar el nivel de riesgo", "error");
@@ -132,7 +129,7 @@ namespace WebCovid
                     fileSize = FilePDFImg.PostedFile.ContentLength;
                     if (fileSize > 1002400)
                     {
-                        this.EnviaAlertas("¡Error!", "La primera imagen es demasiado grande", "error");
+                        Url = "LARGE";
                     }
                     else
                     {
@@ -146,7 +143,7 @@ namespace WebCovid
                     FileName = FilePDFImg.FileName;
                     fileSize = FilePDFImg.PostedFile.ContentLength;
                     if (fileSize > 1002400)
-                        this.EnviaAlertas("¡Error!", "El archivo PDF es demasiado grande", "error");
+                        Url = "LARGE";
                     else
                     {
                         imgPath = "comprobacion/pdfPruebas/";
@@ -178,7 +175,7 @@ namespace WebCovid
                     fileSize = FilePDFImg.PostedFile.ContentLength;
                     if (fileSize > 1002400)
                     {
-                        this.EnviaAlertas("¡Error!", "La primera imagen es demasiado grande", "error");
+                        Url = "LARGE";
                     }
                     else
                     {
@@ -192,7 +189,7 @@ namespace WebCovid
                     FileName = FilePDFImg.FileName;
                     fileSize = FilePDFImg.PostedFile.ContentLength;
                     if (fileSize > 1002400)
-                        this.EnviaAlertas("¡Error!", "El archivo PDF es demasiado grande", "error");
+                        Url = "LARGE";
                     else
                     {
                         imgPath = "comprobacion/pdfPruebas/";
@@ -201,7 +198,7 @@ namespace WebCovid
                     }
                 }
                 else
-                    this.EnviaAlertas("¡Info!", "Solo se aceptan extensiones de imagen .jpg / .png / .pdf", "info");
+                    Url = "FAKE";
             }
             else
             {
@@ -263,34 +260,41 @@ namespace WebCovid
                             string url = this.UploadFileV2();
                             if (url != "")
                             {
-                                int idProf = Convert.ToInt32(this.GVPositivos.SelectedRow.Cells[1].Text);
-                                PositivoProfe positivoProfe = new PositivoProfe()
+                                if(url=="FAKE")
+                                    this.EnviaAlertas("¡Info!", "Solo se aceptan extensiones de imagen .jpg / .png / .pdf", "error");
+                                if(url=="LARGE")
+                                    this.EnviaAlertas("¡Error!", "El archivo es demasiado grande", "error");
+                                if (url != "FAKE" && url != "LARGE")
                                 {
-                                    Id_posProfe = idProf,
-                                    FechaConfirmado = Cal2.SelectedDate,
-                                    Comprobacion = url,
-                                    Antecedentes = TB12.Text,
-                                    NumContagio = Convert.ToByte(TB22.Text),
-                                    Extra = TB33.Text,
-                                    F_Profe = Convert.ToInt32(this.GVPositivos.SelectedRow.Cells[6].Text),
-                                    Riesgo = DDL12.SelectedItem.Text
-                                };
-                                if (this.NegociosProfesor.ModificarCasoPositivo(positivoProfe))
-                                {
-                                    this.EnviaAlertas("Correcto!", "Caso Positivo, Actualizado correctamente", "success");
-                                    this.comprobaciones = this.NegociosProfesor.DevolverRutasdeCasosCovid();
-                                    Session["ListaComp"] = this.comprobaciones;
+                                    int idProf = Convert.ToInt32(this.GVPositivos.SelectedRow.Cells[1].Text);
+                                    PositivoProfe positivoProfe = new PositivoProfe()
+                                    {
+                                        Id_posProfe = idProf,
+                                        FechaConfirmado = Cal2.SelectedDate,
+                                        Comprobacion = url,
+                                        Antecedentes = TB12.Text,
+                                        NumContagio = Convert.ToByte(TB22.Text),
+                                        Extra = TB33.Text,
+                                        F_Profe = Convert.ToInt32(this.GVPositivos.SelectedRow.Cells[6].Text),
+                                        Riesgo = DDL12.SelectedItem.Text
+                                    };
+                                    if (this.NegociosProfesor.ModificarCasoPositivo(positivoProfe))
+                                    {
+                                        this.EnviaAlertas("Correcto!", "Caso Positivo, Actualizado correctamente", "success");
+                                        this.comprobaciones = this.NegociosProfesor.DevolverRutasdeCasosCovid();
+                                        Session["ListaComp"] = this.comprobaciones;
+                                    }
+                                    GVPositivos.Rows[GVPositivos.SelectedIndex].Cells[2].Text = Cal2.SelectedDate.ToString();
+                                    GVPositivos.Rows[GVPositivos.SelectedIndex].Cells[3].Text = TB12.Text;
+                                    GVPositivos.Rows[GVPositivos.SelectedIndex].Cells[4].Text = TB22.Text;
+                                    GVPositivos.Rows[GVPositivos.SelectedIndex].Cells[5].Text = TB33.Text;
+                                    GVPositivos.Rows[GVPositivos.SelectedIndex].Cells[7].Text = DDL12.SelectedItem.Text;
+                                    DDL12.SelectedIndex = 0; Cal2.SelectedDate = DateTime.Today;
+                                    TB12.Text = ""; TB22.Text = ""; TB33.Text = "";
+                                    Image1.ImageUrl = null;
+                                    MostrarDatosTabla();
+                                    Button1.Visible = false;
                                 }
-                                GVPositivos.Rows[GVPositivos.SelectedIndex].Cells[2].Text = Cal2.SelectedDate.ToString();
-                                GVPositivos.Rows[GVPositivos.SelectedIndex].Cells[3].Text = TB12.Text;
-                                GVPositivos.Rows[GVPositivos.SelectedIndex].Cells[4].Text = TB22.Text;
-                                GVPositivos.Rows[GVPositivos.SelectedIndex].Cells[5].Text = TB33.Text;
-                                GVPositivos.Rows[GVPositivos.SelectedIndex].Cells[7].Text = DDL12.SelectedItem.Text;
-                                DDL12.SelectedIndex = 0; Cal2.SelectedDate = DateTime.Today;
-                                TB12.Text = ""; TB22.Text = ""; TB33.Text = "";
-                                Image1.ImageUrl = null;
-                                MostrarDatosTabla();
-                                Button1.Visible = false;
                             }
                         }
                     }

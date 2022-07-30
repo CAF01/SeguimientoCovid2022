@@ -130,6 +130,8 @@ namespace ClassLogicaNegocios
             return this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
         }
 
+
+
         public List<Profesor> MostrarProfesores()
         {
             List<Profesor> list = null;
@@ -440,53 +442,33 @@ namespace ClassLogicaNegocios
 
         // Mostrar todos los profesores contagiados de un programa educativo en un cuatrimestre 
         //especifico
-        public List<FiltroProgramaPeriodo> MostrarContagiadosPorFiltroCuatrimestre(Cuatrimestre cuatrimestre)
+        public DataSet MostrarContagiadosPorFiltroProgramaCuatrimestre(int idPeriodo,int idCuatrimestre)
         {
-            List<FiltroProgramaPeriodo> list = null;
-            string querySql = "SELECT Pr.ProgramaEd,C.id_Cuatrimestre,C.Periodo,C.Anio,P.RegistroEmpleado,(P.Nombre +' '+P.Ap_pat +' '+ Ap_mat) as Profesor," +
-                "Pos.Id_posProfe,Pos.FechaConfirmado FROM GrupoCuatrimestre GC " +
+            //List<FiltroProgramaPeriodo> list = null;
+            string querySql = "SELECT Pr.ProgramaEd,C.Periodo,C.Anio,P.RegistroEmpleado," +
+                "(P.Nombre +' '+P.Ap_pat +' '+ Ap_mat) as Profesor,Pos.FechaConfirmado " +
+                "FROM GrupoCuatrimestre GC " +
                 "INNER JOIN Cuatrimestre C ON C.id_Cuatrimestre = GC.F_Cuatri " +
-                "INNER JOIN ProgramaEducativo Pr ON Pr.Id_pe = GC.F_ProgEd INNER JOIN ProfeGRupo PG ON PG.F_GruCuat = GC.Id_GruCuat " +
-                "INNER JOIN Profesor P ON P.ID_Profe = PG.F_Profe INNER JOIN PositivoProfe Pos ON Pos.F_Profe = P.ID_Profe " +
-                "WHERE Pos.FechaConfirmado BETWEEN @start AND @end";
+                "INNER JOIN ProgramaEducativo Pr ON Pr.Id_pe = GC.F_ProgEd " +
+                "INNER JOIN ProfeGRupo PG ON PG.F_GruCuat = GC.Id_GruCuat " +
+                "INNER JOIN Profesor P ON P.ID_Profe = PG.F_Profe " +
+                "INNER JOIN PositivoProfe Pos ON Pos.F_Profe = P.ID_Profe " +
+                "WHERE Pr.Id_pe=@idP AND GC.F_Cuatri=@idC";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
-                new SqlParameter("start",cuatrimestre.fechaInicio),
-                new SqlParameter("end",cuatrimestre.fechaFin)
+                new SqlParameter("idP",idPeriodo),
+                new SqlParameter("idC",idCuatrimestre)
             };
-            SqlDataReader sqlDataReader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
-
-            if (sqlDataReader != null && sqlDataReader.HasRows)
-            {
-                list = new List<FiltroProgramaPeriodo>();
-                while (sqlDataReader.Read())
-                {
-                    list.Add(new FiltroProgramaPeriodo()
-                    {
-                        ProgramaEd = sqlDataReader.GetString(0),
-                        id_Cuatrimestre = sqlDataReader.GetInt32(1),
-                        Periodo = sqlDataReader.GetString(2),
-                        Anio = sqlDataReader.GetString(3),
-                        RegistroEmpleado = sqlDataReader.GetInt32(4),
-                        Profesor = sqlDataReader.GetString(5),
-                        Id_posProfe = sqlDataReader.GetInt32(6),
-                        FechaConfirmado = sqlDataReader.GetDateTime(7)
-                    });
-                }
-            }
-            this.AccesoDatosSql.CerrarConexion();
-            return list;
-
+            return this.AccesoDatosSql.ConsultaDS(querySql, sqlParameters, ref querySql);
         }
 
         //Mostrar los contagios de un profesor
-        public List<PositivoProfe> BuscarCasosPositivoDeProfesor(int idProfe, int RegistroEmpleado)
+        public List<PositivoProfe> BuscarCasosPositivoDeProfesor(int idProfe)
         {
             List<PositivoProfe> list = null;
-            string querySql = "SELECT * FROM PositivoProfe WHERE RegistroEmpleado=@RegistroEmpleado OR F_Profe=@id";
+            string querySql = "SELECT * FROM PositivoProfe WHERE F_Profe=@id";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
-                new SqlParameter("RegistroEmpleado",RegistroEmpleado),
                 new SqlParameter("id",idProfe)
             };
             SqlDataReader reader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
@@ -495,14 +477,18 @@ namespace ClassLogicaNegocios
                 list = new List<PositivoProfe>();
                 while (reader.Read())
                 {
+                    string Ante = "";
+                    string Extra = "";
+                    _ = String.IsNullOrEmpty(((object)reader[3]).ToString()) ? Ante="" : Ante=reader.GetString(3);
+                    _ = String.IsNullOrEmpty(((object)reader[5]).ToString()) ? Extra = "" : Extra= reader.GetString(5);
                     list.Add(new PositivoProfe()
                     {
                         Id_posProfe = reader.GetInt32(0),
                         FechaConfirmado = reader.GetDateTime(1),
                         Comprobacion = reader.GetString(2),
-                        Antecedentes = reader.GetString(3),
-                        NumContagio = reader.GetInt32(4),
-                        Extra = reader.GetString(5),
+                        Antecedentes = Ante,
+                        NumContagio = reader.GetByte(4),
+                        Extra = Extra,
                         F_Profe = reader.GetInt32(6),
                         Riesgo = reader.GetString(7)
                     });
@@ -560,18 +546,26 @@ namespace ClassLogicaNegocios
                 list = new List<FiltroSeguimientoProfesor>();
                 while (reader.Read())
                 {
+                    string tel = "";
+                    string correo = "";
+                    string Entrevista = "";
+                    string Extra = "";
+                    _ = String.IsNullOrEmpty(((object)reader[2]).ToString()) ? tel = "" : tel = reader.GetString(2);
+                    _ = String.IsNullOrEmpty(((object)reader[3]).ToString()) ? correo = "" : correo = reader.GetString(3);
+                    _ = String.IsNullOrEmpty(((object)reader[7]).ToString()) ? Entrevista = "" : Entrevista = reader.GetString(7);
+                    _ = String.IsNullOrEmpty(((object)reader[8]).ToString()) ? Extra = "" : Extra = reader.GetString(8);
                     //Va a tronar valores nulos
                     list.Add(new FiltroSeguimientoProfesor()
                     {
                         id_Segui = reader.GetInt32(0),
                         Doctor = reader.GetString(1),
-                        telefono = reader.GetString(2),
-                        correo = reader.GetString(3),
+                        telefono = tel,
+                        correo = correo,//null
                         FechaSeguimiento = reader.GetDateTime(4),
                         FormComunica = reader.GetString(5),
                         Reporte = reader.GetString(6),
-                        Entrevista = reader.GetString(7),
-                        Extra = reader.GetString(8)
+                        Entrevista = Entrevista,//null
+                        Extra = Extra//null
                     });
                 }
             }

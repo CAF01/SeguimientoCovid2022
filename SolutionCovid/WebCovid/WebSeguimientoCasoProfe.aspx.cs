@@ -3,6 +3,7 @@ using ClassLogicaNegocios;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -19,34 +20,30 @@ namespace WebCovid
         {
             if (!IsPostBack)
             {
-                if (Session["NegociosCovidProfSeguimiento"] != null && Session["NegociosMedSeguimiento"]!=null)
-                {
-                    this.LogicaNegociosProfesor = (LogicaNegociosProfesor)Session["NegociosCovidProfSeguimiento"];
-                    this.LogicaNegociosMedico = (LogicaNegociosMedico)Session["NegociosMedSeguimiento"];
-                    this.seguimientoProfesors1 = (List<SeguimientoProfesor>)Session["SeguimientosList"];
-                }
-
-                else
-                {
-                    this.LogicaNegociosProfesor = new LogicaNegociosProfesor(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
-                    this.LogicaNegociosMedico = new LogicaNegociosMedico(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
-                    Session["NegociosCovidProfSeguimiento"] = this.LogicaNegociosProfesor;
-                    Session["NegociosMedSeguimiento"] = this.LogicaNegociosMedico;
-                    Session["SeguimientosList"] = this.seguimientoProfesors1;
-                }
+                this.LogicaNegociosProfesor = new LogicaNegociosProfesor(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
+                this.LogicaNegociosMedico = new LogicaNegociosMedico(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
+                Session["NegociosCovidProfSeguimiento"] = this.LogicaNegociosProfesor;
+                Session["NegociosMedSeguimiento"] = this.LogicaNegociosMedico;
+                Session["SeguimientosList"] = this.seguimientoProfesors1;
             }
             else
             {
                 this.LogicaNegociosProfesor = (LogicaNegociosProfesor)Session["NegociosCovidProfSeguimiento"];
                 this.LogicaNegociosMedico = (LogicaNegociosMedico)Session["NegociosMedSeguimiento"];
                 this.seguimientoProfesors1 = (List<SeguimientoProfesor>)Session["SeguimientosList"];
-
             }
             if(this.LogicaNegociosProfesor != null)
             {
-                GVPositivos.DataSource = this.LogicaNegociosProfesor.MostrarCasosPositivosConFiltro();
+                DataSet dataSetP = this.LogicaNegociosProfesor.MostrarCasosPositivosConFiltro();
+                
                 string msg = "";
-                GVMedicos.DataSource = this.LogicaNegociosMedico.consultarMedicos(ref msg);
+                DataSet dataSetM = this.LogicaNegociosMedico.consultarMedicos(ref msg);
+                GVPositivos.DataSource = dataSetP;
+                GVMedicos.DataSource = dataSetM;
+                GVPositivos2.DataSource = dataSetP;
+                GVMed2.DataSource = dataSetM;
+                GVPositivos2.DataBind();
+                GVMed2.DataBind();
                 GVPositivos.DataBind();
                 GVMedicos.DataBind();
             }
@@ -96,71 +93,11 @@ namespace WebCovid
 
         protected void GVPositivos_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(GVPositivos.SelectedIndex>=0)
-            {
-                DDLSeguimientos.Items.Clear();
-                List<SeguimientoProfesor> seguimientoProfesors = this.LogicaNegociosProfesor.MostrarSeguimientoDeCaso(
-                    Convert.ToInt32(GVPositivos.SelectedRow.Cells[1].Text));
-                if (seguimientoProfesors!=null && seguimientoProfesors.Count >= 1)
-                {
-                    this.seguimientoProfesors1 = seguimientoProfesors;
-                    Session["SeguimientosList"] = this.seguimientoProfesors1;
-                    ListItem listItem = new ListItem();
-                    listItem.Text = "--SELECCIONAR CASO DE SEGUIMIENTO";
-                    listItem.Value = "-1";
-                    DDLSeguimientos.Items.Add(listItem);
-                    foreach (SeguimientoProfesor seguimientoProfesor in seguimientoProfesors)
-                    {
-                        listItem = new ListItem();
-                        string[] dateFixed = seguimientoProfesor.Fecha.ToString().Split(' ');
-                        listItem.Text = String.Format("Registro: {0}, fecha:{1}, reporte:{2}", seguimientoProfesor.id_Segui, dateFixed[0], seguimientoProfesor.Reporte);
-                        listItem.Value = seguimientoProfesor.id_Segui.ToString();
-                        DDLSeguimientos.Items.Add(listItem);
-                    }
-                    DDLSeguimientos.Visible = true;
-                }
-                else
-                {
-                    DDLSeguimientos.Items.Clear();
-                    DDLSeguimientos.Visible = false;
-                    GVMedicos.SelectedIndex = -1;
-                    DDLComunica2.SelectedIndex = 0;
-                    Calendar.SelectedDate = DateTime.Today;
-                    TB12.Text = "";
-                    TB22.Text = "";
-                    TB32.Text = "";
-                }
-            }
-            DDLSeguimientos.SelectedIndex = -1;
         }
 
         protected void DDLSeguimientos_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(DDLSeguimientos.SelectedIndex>=1)
-            {
-                int index=DDLSeguimientos.SelectedIndex;
-                SeguimientoProfesor seguimiento = this.seguimientoProfesors1[index-1];
-                if (seguimiento.Form_Comunica == "Vía Whatsapp")
-                    DDLComunica2.SelectedIndex = 0;
-                if (seguimiento.Form_Comunica == "Personal")
-                    DDLComunica2.SelectedIndex = 1;
-                if (seguimiento.Form_Comunica == "Vía teléfonica")
-                    DDLComunica2.SelectedIndex = 2;
-                if (seguimiento.Form_Comunica == "Correo Electrónico")
-                    DDLComunica2.SelectedIndex = 3;
-                TB12.Text = seguimiento.Reporte;
-                TB22.Text = seguimiento.Entrevista;
-                TB32.Text = seguimiento.Extra;
-                Calendar.SelectedDate = seguimiento.Fecha;
-            }
-            else
-            {
-                TB12.Text = "";
-                TB22.Text = "";
-                TB32.Text = "";
-                DDLComunica2.SelectedIndex = 0;
-                Calendar.SelectedDate = DateTime.Today;
-            }
+
         }
 
         protected void BTNMod_Click(object sender, EventArgs e)
@@ -186,10 +123,13 @@ namespace WebCovid
                             Extra = TB32.Text
                         }))
                         {
+                            LbMed.Visible = false;
+                            GVMed2.Visible = false;
+                            Label1.Visible = false;
                             DDLSeguimientos.Items.Clear();
                             DDLSeguimientos.Visible = false;
-                            GVMedicos.SelectedIndex = -1;
-                            GVPositivos.SelectedIndex = -1;
+                            GVMed2.SelectedIndex = -1;
+                            GVPositivos2.SelectedIndex = -1;
                             DDLComunica2.SelectedIndex = 0;
                             Calendar.SelectedDate=DateTime.Today;
                             TB12.Text = "";
@@ -220,13 +160,16 @@ namespace WebCovid
                 {
                     DDLSeguimientos.Items.Clear();
                     DDLSeguimientos.Visible = false;
-                    GVMedicos.SelectedIndex = -1;
-                    GVPositivos.SelectedIndex = -1;
+                    GVMed2.SelectedIndex = -1;
+                    GVPositivos2.SelectedIndex = -1;
                     DDLComunica2.SelectedIndex = 0;
                     Calendar.SelectedDate = DateTime.Today;
                     TB12.Text = "";
                     TB22.Text = "";
                     TB32.Text = "";
+                    LbMed.Visible = false;
+                    GVMed2.Visible = false;
+                    Label1.Visible = false;
                     this.EnviaAlertas("Correcto", "Seguimiento de caso eliminado correctamente", "success");
                 }
                 else
@@ -236,6 +179,86 @@ namespace WebCovid
             }
             else
                 this.EnviaAlertas("Error","Seleccione un seguimiento de caso válido","info");
+        }
+
+        protected void GVMed2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void GVPositivos2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (GVPositivos2.SelectedIndex >= 0)
+            {
+                DDLSeguimientos.Items.Clear();
+                List<SeguimientoProfesor> seguimientoProfesors = this.LogicaNegociosProfesor.MostrarSeguimientoDeCaso(
+                    Convert.ToInt32(GVPositivos2.SelectedRow.Cells[1].Text));
+                if (seguimientoProfesors != null && seguimientoProfesors.Count > 0)
+                {
+                    LbMed.Visible = true;
+                    GVMed2.Visible = true;
+                    Label1.Visible = true;
+                    this.seguimientoProfesors1 = seguimientoProfesors;
+                    Session["SeguimientosList"] = this.seguimientoProfesors1;
+                    ListItem listItem = new ListItem();
+                    listItem.Text = "--SELECCIONAR CASO DE SEGUIMIENTO";
+                    listItem.Value = "-1";
+                    DDLSeguimientos.Items.Add(listItem);
+                    foreach (SeguimientoProfesor seguimientoProfesor in seguimientoProfesors)
+                    {
+                        listItem = new ListItem();
+                        string[] dateFixed = seguimientoProfesor.Fecha.ToString().Split(' ');
+                        listItem.Text = String.Format("Registro: {0}, fecha:{1}, reporte:{2}", seguimientoProfesor.id_Segui, dateFixed[0], seguimientoProfesor.Reporte);
+                        listItem.Value = seguimientoProfesor.id_Segui.ToString();
+                        DDLSeguimientos.Items.Add(listItem);
+                    }
+                    DDLSeguimientos.Visible = true;
+                }
+                else
+                {
+                    LbMed.Visible = false;
+                    GVMed2.Visible = false;
+                    Label1.Visible = false;
+                    DDLSeguimientos.Items.Clear();
+                    DDLSeguimientos.Visible = false;
+                    //GVMedicos.SelectedIndex = -1;
+                    DDLComunica2.SelectedIndex = 0;
+                    Calendar.SelectedDate = DateTime.Today;
+                    TB12.Text = "";
+                    TB22.Text = "";
+                    TB32.Text = "";
+                }
+            }
+            DDLSeguimientos.SelectedIndex = -1;
+        }
+
+        protected void DDLSeguimientos_SelectedIndexChanged1(object sender, EventArgs e)
+        {
+            if (DDLSeguimientos.SelectedIndex >= 1)
+            {
+                int index = DDLSeguimientos.SelectedIndex;
+                SeguimientoProfesor seguimiento = this.seguimientoProfesors1[index - 1];
+                if (seguimiento.Form_Comunica == "Vía Whatsapp")
+                    DDLComunica2.SelectedIndex = 0;
+                if (seguimiento.Form_Comunica == "Personal")
+                    DDLComunica2.SelectedIndex = 1;
+                if (seguimiento.Form_Comunica == "Vía teléfonica")
+                    DDLComunica2.SelectedIndex = 2;
+                if (seguimiento.Form_Comunica == "Correo Electrónico")
+                    DDLComunica2.SelectedIndex = 3;
+                TB12.Text = seguimiento.Reporte;
+                TB22.Text = seguimiento.Entrevista;
+                TB32.Text = seguimiento.Extra;
+                Calendar.SelectedDate = seguimiento.Fecha;
+            }
+            else
+            {
+                TB12.Text = "";
+                TB22.Text = "";
+                TB32.Text = "";
+                DDLComunica2.SelectedIndex = 0;
+                Calendar.SelectedDate = DateTime.Today;
+            }
         }
     }
 }

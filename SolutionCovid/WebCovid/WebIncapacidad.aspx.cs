@@ -68,20 +68,27 @@ namespace WebCovid
                     string url = this.UploadFile();
                     if (url != "")
                     {
-                        int idPos = Convert.ToInt32(GVPos.SelectedRow.Cells[1].Text);
-                        Incapacidad incapacidad = new Incapacidad()
+                        if (url == "LARGE")
+                            EnviaAlertas("¡Error!", "La primera imagen es demasiado grande", "error");
+                        if (url == "FAKE")
+                            EnviaAlertas("¡Error!", "Solo se admiten archivos .pdf / .png / .jpg", "error");
+                        if(url!="LARGE" && url!="FAKE")
                         {
-                            Fecha_otorga=Cal1.SelectedDate,
-                            Fecha_finalizacion=Cal2.SelectedDate,
-                            IncapacidadUrl=url,
-                            id_posProfe=idPos
-                        };
-                        if (this.LogicaNegociosProfesor.AgregarIncapacidad(incapacidad))
-                        {
-                            this.EnviaAlertas("Correcto!", "Incapacidad registrada", "success");
+                            int idPos = Convert.ToInt32(GVPos.SelectedRow.Cells[1].Text);
+                            Incapacidad incapacidad = new Incapacidad()
+                            {
+                                Fecha_otorga = Cal1.SelectedDate,
+                                Fecha_finalizacion = Cal2.SelectedDate,
+                                IncapacidadUrl = url,
+                                id_posProfe = idPos
+                            };
+                            if (this.LogicaNegociosProfesor.AgregarIncapacidad(incapacidad))
+                            {
+                                this.EnviaAlertas("Correcto!", "Incapacidad registrada", "success");
+                            }
+                            GVPos.SelectedIndex = -1; Cal1.SelectedDate = DateTime.Today;
+                            Cal2.SelectedDate = DateTime.Today.AddDays(1);
                         }
-                        GVPos.SelectedIndex = -1; Cal1.SelectedDate = DateTime.Today;
-                        Cal2.SelectedDate = DateTime.Today.AddDays(1);
                     }
                 }
                 else
@@ -112,9 +119,7 @@ namespace WebCovid
                     FileName = FU1.FileName;
                     fileSize = FU1.PostedFile.ContentLength;
                     if (fileSize > 1002400)
-                    {
-                        this.EnviaAlertas("¡Error!", "La primera imagen es demasiado grande", "error");
-                    }
+                        Url = "LARGE";
                     else
                     {
                         imgPath = "incapacidad/imgPruebas/";
@@ -127,7 +132,7 @@ namespace WebCovid
                     FileName = FU1.FileName;
                     fileSize = FU1.PostedFile.ContentLength;
                     if (fileSize > 1002400)
-                        this.EnviaAlertas("¡Error!", "El archivo PDF es demasiado grande", "error");
+                        Url = "LARGE";
                     else
                     {
                         imgPath = "incapacidad/pdfPruebas/";
@@ -136,7 +141,7 @@ namespace WebCovid
                     }
                 }
                 else
-                    this.EnviaAlertas("¡Info!", "Solo se aceptan extensiones de imagen .jpg / .png / .pdf", "info");
+                    Url = "FAKE";
             }
             return Url;
         }
@@ -159,7 +164,7 @@ namespace WebCovid
                     fileSize = FU2.PostedFile.ContentLength;
                     if (fileSize > 1002400)
                     {
-                        this.EnviaAlertas("¡Error!", "La imagen demasiado grande", "error");
+                        Url = "LARGE";
                     }
                     else
                     {
@@ -173,7 +178,7 @@ namespace WebCovid
                     FileName = FU2.FileName;
                     fileSize = FU2.PostedFile.ContentLength;
                     if (fileSize > 1002400)
-                        this.EnviaAlertas("¡Error!", "El archivo PDF es demasiado grande", "error");
+                        Url = "LARGE";
                     else
                     {
                         imgPath = "incapacidad/pdfPruebas/";
@@ -181,8 +186,8 @@ namespace WebCovid
                         FU2.SaveAs(Server.MapPath(Url));
                     }
                 }
-                if(extension.ToLower() != ".pdf" && extension.ToLower() !=".png" && extension.ToLower() != ".jpg")
-                    this.EnviaAlertas("¡Info!", "Solo se aceptan extensiones de imagen .jpg / .png / .pdf", "info");
+                if (extension.ToLower() != ".pdf" && extension.ToLower() != ".png" && extension.ToLower() != ".jpg")
+                    Url = "FAKE";
             }
             else
             {
@@ -200,22 +205,29 @@ namespace WebCovid
                     string url = this.UploadFileV2();
                     if (url != "")
                     {
-                        int idPos = Convert.ToInt32(GVPos2.SelectedRow.Cells[1].Text);
-                        Incapacidad incapacidad = new Incapacidad()
+                        if(url=="LARGE")
+                            EnviaAlertas("¡Error!", "La primera imagen es demasiado grande", "error");
+                        if(url=="FAKE")
+                            EnviaAlertas("¡Error!", "Solo se admiten archivos .pdf / .png / .jpg", "error");
+                        if (url != "LARGE" && url != "FAKE")
                         {
-                            Fecha_otorga = Cal3.SelectedDate,
-                            Fecha_finalizacion = Cal4.SelectedDate,
-                            IncapacidadUrl = url,
-                            id_Incapacidad=idPos
-                        };
-                        if (this.LogicaNegociosProfesor.ModificarIncapacidad(incapacidad))
-                        {
-                            this.EnviaAlertas("Correcto!", "Registro de Incapacidad Actualizada correctamente", "success");
-                            LimpiarGVIncapacidad();
+                            int idPos = Convert.ToInt32(GVPos2.SelectedRow.Cells[1].Text);
+                            Incapacidad incapacidad = new Incapacidad()
+                            {
+                                Fecha_otorga = Cal3.SelectedDate,
+                                Fecha_finalizacion = Cal4.SelectedDate,
+                                IncapacidadUrl = url,
+                                id_Incapacidad = idPos
+                            };
+                            if (this.LogicaNegociosProfesor.ModificarIncapacidad(incapacidad))
+                            {
+                                this.EnviaAlertas("Correcto!", "Registro de Incapacidad Actualizada correctamente", "success");
+                                LimpiarGVIncapacidad();
 
+                            }
+                            GVPos2.SelectedIndex = -1; Cal3.SelectedDate = DateTime.Today;
+                            Cal4.SelectedDate = DateTime.Today.AddDays(1);
                         }
-                        GVPos2.SelectedIndex = -1; Cal3.SelectedDate = DateTime.Today;
-                        Cal4.SelectedDate = DateTime.Today.AddDays(1);
                     }
                 }
                 else

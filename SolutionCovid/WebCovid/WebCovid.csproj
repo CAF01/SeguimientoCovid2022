@@ -50,6 +50,7 @@
       <HintPath>..\ClassLogicaNegocios\bin\Debug\ClassLogicaNegocios.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -98,12 +99,16 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Web.config" />
     <Content Include="WebAlumno.aspx" />
+    <Content Include="WebConsultasProfesor.aspx" />
     <Content Include="WebCuatrimestre.aspx" />
+    <Content Include="WebIncapacidad.aspx" />
     <Content Include="WebInicio.aspx" />
     <Content Include="WebMedico.aspx" />
     <Content Include="WebPositivoAlumno.aspx" />
     <Content Include="WebProfesor.aspx" />
     <Content Include="WebSeguimientoAlumno.aspx" />
+    <Content Include="WebPositivosProfe.aspx" />
+    <Content Include="WebSeguimientoCasoProfe.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -114,12 +119,26 @@
     <Compile Include="WebAlumno.aspx.designer.cs">
       <DependentUpon>WebAlumno.aspx</DependentUpon>
     </Compile>
+    <Compile Include="WebConsultasProfesor.aspx.cs">
+      <DependentUpon>WebConsultasProfesor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebConsultasProfesor.aspx.designer.cs">
+      <DependentUpon>WebConsultasProfesor.aspx</DependentUpon>
+    </Compile>
     <Compile Include="WebCuatrimestre.aspx.cs">
       <DependentUpon>WebCuatrimestre.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="WebCuatrimestre.aspx.designer.cs">
       <DependentUpon>WebCuatrimestre.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WebIncapacidad.aspx.cs">
+      <DependentUpon>WebIncapacidad.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebIncapacidad.aspx.designer.cs">
+      <DependentUpon>WebIncapacidad.aspx</DependentUpon>
     </Compile>
     <Compile Include="WebInicio.aspx.cs">
       <DependentUpon>WebInicio.aspx</DependentUpon>
@@ -141,6 +160,8 @@
     </Compile>
     <Compile Include="WebPositivoAlumno.aspx.designer.cs">
       <DependentUpon>WebPositivoAlumno.aspx</DependentUpon>
+    <Compile Include="WebPositivosProfe.aspx.designer.cs">
+      <DependentUpon>WebPositivosProfe.aspx</DependentUpon>
     </Compile>
     <Compile Include="WebProfesor.aspx.cs">
       <DependentUpon>WebProfesor.aspx</DependentUpon>
@@ -149,12 +170,13 @@
     <Compile Include="WebProfesor.aspx.designer.cs">
       <DependentUpon>WebProfesor.aspx</DependentUpon>
     </Compile>
+    <Compile Include="WebSeguimientoCasoProfe.aspx.cs">
+      <DependentUpon>WebSeguimientoCasoProfe.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="WebSeguimientoAlumno.aspx.cs">
       <DependentUpon>WebSeguimientoAlumno.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="WebSeguimientoAlumno.aspx.designer.cs">
-      <DependentUpon>WebSeguimientoAlumno.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +219,12 @@
       <Project>{5DC9ADCC-AE65-43FD-9693-2B0D611E13C6}</Project>
       <Name>ClassLogicaNegocios</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="comprobacion\imgPruebas\" />
+    <Folder Include="comprobacion\pdfPruebas\" />
+    <Folder Include="incapacidad\imgPruebas\" />
+    <Folder Include="incapacidad\pdfPruebas\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

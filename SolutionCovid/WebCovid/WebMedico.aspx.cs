@@ -75,6 +75,15 @@ namespace WebCovid
 
         protected void BTNGrid_Click(object sender, EventArgs e)
         {
+            this.updateInfoTable();
+            if (this.DataSetMedicos != null && Medicos.Count > 0)
+                this.EnviaAlertas("Consulta", "Lista de médicos obtenida", "success");
+            else
+                this.EnviaAlertas("Error", "No hay información disponible", "error");
+        }
+
+        public void updateInfoTable()
+        {
             string msg = "";
             this.DataSetMedicos = this.NegociosMedico.consultarMedicos(ref msg);
             Session["DataMed"] = this.DataSetMedicos;
@@ -82,7 +91,6 @@ namespace WebCovid
             Session["Meds"] = this.Medicos;
             GVMedico.DataSource = this.DataSetMedicos;
             GVMedico.DataBind();
-            this.EnviaAlertas("Consulta", "Lista de médicos obtenida", "success");
         }
 
 
@@ -110,8 +118,9 @@ namespace WebCovid
                     bool flag = this.NegociosMedico.editarMedico(Convert.ToInt32(GVMedico.SelectedRow.Cells[1].Text),MedicoUpdated , ref msg);
                     if (flag)
                     {
-                        int index = this.Medicos.FindIndex(x => x.id == Convert.ToInt32(GVMedico.SelectedRow.Cells[1].Text));
-                        this.Medicos[index] = MedicoUpdated;
+                        //int index = this.Medicos.FindIndex(x => x.id == Convert.ToInt32(GVMedico.SelectedRow.Cells[1].Text));
+                        //this.Medicos[index] = MedicoUpdated;
+                        this.updateInfoTable();
                         this.EnviaAlertas("Correcto!", "¡Médico Actualizado!", "success");
           
                     }
@@ -141,8 +150,9 @@ namespace WebCovid
                 bool flag = this.NegociosMedico.eliminarMedico(Convert.ToInt32(GVMedico.SelectedRow.Cells[1].Text), ref msg);
                 if (flag)
                 {
-                    int index = this.Medicos.FindIndex(x => x.id == Convert.ToInt32(GVMedico.SelectedRow.Cells[1].Text));
-                    this.Medicos.RemoveAt(index);
+                    //int index = this.Medicos.FindIndex(x => x.id == Convert.ToInt32(GVMedico.SelectedRow.Cells[1].Text));
+                    //this.Medicos.RemoveAt(index);
+                    this.updateInfoTable();
                     this.EnviaAlertas("Correcto!", "¡Médico Eliminado!", "success");
 
                 }

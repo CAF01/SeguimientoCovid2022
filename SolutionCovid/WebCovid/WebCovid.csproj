@@ -160,6 +160,7 @@
     </Compile>
     <Compile Include="WebPositivoAlumno.aspx.designer.cs">
       <DependentUpon>WebPositivoAlumno.aspx</DependentUpon>
+	</Compile>  
     <Compile Include="WebPositivosProfe.aspx.designer.cs">
       <DependentUpon>WebPositivosProfe.aspx</DependentUpon>
     </Compile>

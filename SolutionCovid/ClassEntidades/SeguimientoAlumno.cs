@@ -11,7 +11,7 @@ namespace ClassEntidades
         public int id { set; get; }
         public int f_positivoAlum { set; get; }
         public int f_medico { set; get; }
-        public string fecha { set; get; }
+        public DateTime fecha { set; get; }
         public string formaComunicacion { set; get; }
         public string reporte { set; get; }
         public string entrevista { set; get; }

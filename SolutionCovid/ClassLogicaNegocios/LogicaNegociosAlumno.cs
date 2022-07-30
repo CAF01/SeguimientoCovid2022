@@ -51,7 +51,7 @@ namespace ClassLogicaNegocios
         public Alumno buscarAlumno(int idAlumno, ref string mensaje)
         {
             Alumno alumno = null;
-            string query = "select * Alumno where ID_Alumno=@idAlumno;";
+            string query = "select * from Alumno where ID_Alumno=@idAlumno;";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
                 new SqlParameter("idAlumno", idAlumno)
@@ -81,8 +81,8 @@ namespace ClassLogicaNegocios
         // regla para editar datos de un alumno
         public Boolean editarAlumno(int idAlumno, Alumno alumno, ref string mensaje)
         {
-            string queryUpdate = "UPDATE Alumno SET Matricula=@matricula,Nombre=@nom,Ap_pat=@app,Ap_mat=@apm," +
-                "Genero=@genero,Correo=@correo,Celular=@cel,F_EdoCivil=@fedocivil" +
+            string queryUpdate = "UPDATE Alumno SET Matricula=@matricula,Nombre=@nom,Ap_pat=@app,Ap_mat=@apm, " +
+                "Genero=@genero,Correo=@correo,Celular=@cel,F_EdoCivil=@fedocivil " +
                 "WHERE ID_Alumno=@idAlumno;";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
@@ -186,24 +186,23 @@ namespace ClassLogicaNegocios
         // regla para consultar datos de todos los alumno_grupo
         public DataSet consultarAlumnoGrupo(ref string mensaje)
         {
-            string query = "SELECT AG.ID_AlumnGru,A.Matricula AS MatriculaAlumno," +
-                "PE.ProgramaEd+' '+cast(G.Grado as varchar) + G.Letra as GrupoCuatrimestre,AG.Extra,AG.Extra2" +
-                "FROM AlumnoGrupo AG" +
-                "JOIN Alumno A ON AG.F_Alumn = A.ID_Alumno" +
-                "JOIN GrupoCuatrimestre GC ON AG.F_GruCuat = GC.Id_GruCuat" +
-                "JOIN ProgramaEducativo PE ON GC.F_ProgEd = PE.Id_pe" +
+            string query = "SELECT AG.ID_AlumnGru,A.Matricula AS MatriculaAlumno, " +
+                "PE.ProgramaEd+' '+cast(G.Grado as varchar) + G.Letra as GrupoCuatrimestre,AG.Extra,AG.Extra2 " +
+                "FROM AlumnoGrupo AG " +
+                "JOIN Alumno A ON AG.F_Alumn = A.ID_Alumno " +
+                "JOIN GrupoCuatrimestre GC ON AG.F_GruCuat = GC.Id_GruCuat " +
+                "JOIN ProgramaEducativo PE ON GC.F_ProgEd = PE.Id_pe " +
                 "JOIN Grupo G ON GC.F_Grupo = G.Id_grupo;";
             SqlParameter[] sqlParameters = null;
             DataSet result = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
             if (result != null) { return result; }
-            return null;
+            return null;       
         }
 
         // regla para insertar un nuevo alumno_grupo
         public Boolean insertarAlumnoGrupo(AlumnoGrupo alumnoGrupo, ref string mensaje)
         {
-            string queryInsert = "INSERT INTO AlumnoGrupo(F_Alumn,F_GruCuat,Extra,Extra2)" +
-                "VALUES(@f_alumno,@f_grucuat,@extra,@extra2);";
+            string queryInsert = "INSERT INTO AlumnoGrupo(F_Alumn,F_GruCuat,Extra,Extra2)VALUES(@f_alumno,@f_grucuat,@extra,@extra2);";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
                 new SqlParameter("f_alumno", alumnoGrupo.f_alumno),
@@ -246,7 +245,7 @@ namespace ClassLogicaNegocios
         // regla para editar datos de un alumno_grupo
         public Boolean editarAlumnoGrupo(int idAlumnoGrupo, AlumnoGrupo alumnoGrupo, ref string mensaje)
         {
-            string queryUpdate = "UPDATE AlumnoGrupo SET F_Alumn=@f_alumno,F_GruCuat=f_grucuat,Extra=@extra," +
+            string queryUpdate = "UPDATE AlumnoGrupo SET F_Alumn=@f_alumno,F_GruCuat=@f_grucuat,Extra=@extra," +
                 "Extra2=@extra2 WHERE ID_AlumnGru=@idAlumnoGrupo;";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
@@ -381,7 +380,7 @@ namespace ClassLogicaNegocios
                     if ((object)row[6].ToString() == "")
                         row[6] = "";
                     positivoAlumno.id = (int)row[0];
-                    positivoAlumno.fechaConfirmado = (string)row[1];
+                    positivoAlumno.fechaConfirmado = (DateTime)row[1];
                     positivoAlumno.comprobacion = (string)row[2];
                     positivoAlumno.antecedentes = (string)row[3];
                     positivoAlumno.riesgo = (string)row[4];
@@ -443,7 +442,7 @@ namespace ClassLogicaNegocios
                     listPositivoAlumno.Add(new PositivoAlumno()
                     {
                         id = (int)row[0],
-                        fechaConfirmado = (string)row[1],
+                        fechaConfirmado = (DateTime)row[1],
                         comprobacion = (string)row[2],
                         antecedentes = (string)row[3],
                         riesgo = (string)row[4],
@@ -457,23 +456,23 @@ namespace ClassLogicaNegocios
         }
 
         // regla para obtener colección de positivo alumno en ListItems para listbox
-        public List<PositivoAlumno> obtenerColeccionPositivoAlumno(ref string mensaje)
+        public List<FiltroPositivoAlumno> obtenerColeccionPositivoAlumno(ref string mensaje)
         {
-            List<PositivoAlumno> listPositivoAlumno = null;
+            List<FiltroPositivoAlumno> listPositivoAlumno = null;
             string query = "SELECT PA.ID_posAl,PA.FechaConfirmado, A.Matricula FROM PositivoAlumno PA " +
                 "JOIN Alumno A ON PA.F_Alumno = A.ID_Alumno;";
             SqlParameter[] sqlParameters = null;
             DataSet dataPostivoAlumno = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
             if (dataPostivoAlumno != null)
             {
-                listPositivoAlumno = new List<PositivoAlumno>();
+                listPositivoAlumno = new List<FiltroPositivoAlumno>();
                 foreach (DataRow row in dataPostivoAlumno.Tables[0].Rows)
                 {
-                    listPositivoAlumno.Add(new PositivoAlumno()
+                    listPositivoAlumno.Add(new FiltroPositivoAlumno()
                     {
-                        id = (int)row[0],
-                        fechaConfirmado = (string)row[1],
-                        f_alumno = (int)row[2]
+                        id_posAl = (int)row[0],
+                        fechaConfirmado = (DateTime)row[1],
+                        matriculaAl = (string)row[2]
                     });
                 }
             }
@@ -485,19 +484,12 @@ namespace ClassLogicaNegocios
         // regla para consultar datos de todos los seguimiento_alumno
         public DataSet consultarSeguimientoAlumno(ref string mensaje)
         {
-            string query = "select a.Matricula, a.Nombre+' '+a.Ap_pat+' '+a.Ap_mat as Alumno, " +
-                "pe.ProgramaEd as ProgramaEducativo,c.Periodo + ' ' + cast(c.Anio as varchar) " +
-                "as Cuatrimestre, cast(g.Grado as varchar) + g.Letra as Grupo, pa.FechaConfirmado, " +
-                "pa.NumContagio,sa.Fecha as FechaSeguimiento, m.Nombre + ' ' + m.App + ' ' + m.Apm as Medico," +
-                "sa.Form_Comunica as FormaComunicacion, sa.Reporte, sa.Entrevista, sa.Extra from SeguimientoAL sa " +
+            string query = "select sa.Id_Seguimiento, a.Matricula, a.Nombre+' '+a.Ap_pat+' '+a.Ap_mat as Alumno, " +
+                "m.Nombre + ' ' + m.App + ' ' + m.Apm as MedicoResponsable, sa.Fecha as FechaSeguimiento, " +
+                "sa.Form_Comunica, sa.Reporte, sa.Entrevista, sa.Extra from SeguimientoAL sa " +
                 "inner join PositivoAlumno pa on sa.F_PositivoAL = pa.ID_posAl " +
                 "inner join Alumno a on pa.F_Alumno = a.ID_Alumno " +
-                "inner join AlumnoGrupo ag on ag.F_Alumn = a.ID_Alumno " +
-                "inner join GrupoCuatrimestre gc on ag.F_GruCuat = gc.Id_GruCuat " +
-                "inner join ProgramaEducativo pe on gc.F_ProgEd = pe.Id_pe " +
-                "inner join Cuatrimestre c on gc.F_Cuatri = c.id_Cuatrimestre " +
-                "inner join Grupo g on gc.F_Grupo = g.Id_grupo " +
-                "inner join Medico m on sa.F_medico = M.ID_Dr;";
+                "inner join Medico m on sa.F_medico = m.ID_Dr;";
             SqlParameter[] sqlParameters = null;
             DataSet result = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
             if (result != null) { return result; }
@@ -545,7 +537,7 @@ namespace ClassLogicaNegocios
                     seguimientoAlumno.id = (int)row[0];
                     seguimientoAlumno.f_positivoAlum = (int)row[1];
                     seguimientoAlumno.f_medico = (int)row[2];
-                    seguimientoAlumno.fecha = (string)row[3];
+                    seguimientoAlumno.fecha = (DateTime)row[3];
                     seguimientoAlumno.formaComunicacion = (string)row[4];
                     seguimientoAlumno.reporte = (string)row[5];
                     seguimientoAlumno.entrevista = (string)row[6];
@@ -607,7 +599,7 @@ namespace ClassLogicaNegocios
                         id = (int)row[0],
                         f_positivoAlum = (int)row[1],
                         f_medico = (int)row[2],
-                        fecha = (string)row[3],
+                        fecha = (DateTime)row[3],
                         formaComunicacion = (string)row[4],
                         reporte = (string)row[5],
                         entrevista = (string)row[6],
@@ -639,12 +631,14 @@ namespace ClassLogicaNegocios
                         id = (int)row[0],
                         f_positivoAlum = (int)row[1],
                         f_medico = (int)row[2],
-                        fecha = (string)row[3]
+                        fecha = (DateTime)row[3]
                     });
                 }
             }
             return listSeguimientoAlumno;
         }
+
+        //--------------------------------------Consultas compuestas------------------------------------------
 
         // regla para mostrar a todos los alumnos contagiados de
         // un programa educativo, en un cuatrimestre específico
@@ -652,12 +646,12 @@ namespace ClassLogicaNegocios
         {
             string query = "select a.Matricula, a.Nombre+' '+a.Ap_pat+' '+a.Ap_mat as Alumno, pe.ProgramaEd as " +
                 "ProgramaEducativo, c.Periodo + ' ' + cast(c.Anio as varchar) as Cuatrimestre, " +
-                "pa.FechaConfirmado, pa.NumContagio from PositivoAlumno pa" +
+                "pa.FechaConfirmado, pa.NumContagio from PositivoAlumno pa " +
                 "inner join Alumno a on pa.F_Alumno = a.ID_Alumno " +
-                "inner join AlumnoGrupo ag on ag.F_Alumn = a.ID_Alumno" +
-                "inner join GrupoCuatrimestre gc on ag.F_GruCuat = gc.Id_GruCuat" +
-                "inner join ProgramaEducativo pe on gc.F_ProgEd = pe.Id_pe" +
-                "inner join Cuatrimestre c on gc.F_Cuatri = c.id_Cuatrimestre" +
+                "inner join AlumnoGrupo ag on ag.F_Alumn = a.ID_Alumno " +
+                "inner join GrupoCuatrimestre gc on ag.F_GruCuat = gc.Id_GruCuat " +
+                "inner join ProgramaEducativo pe on gc.F_ProgEd = pe.Id_pe " +
+                "inner join Cuatrimestre c on gc.F_Cuatri = c.id_Cuatrimestre " +
                 "where gc.F_ProgEd = @idProgramaEducativo and gc.F_Cuatri = @idCuatrimestre;";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
@@ -675,13 +669,13 @@ namespace ClassLogicaNegocios
         {
             string query = "select a.Matricula, a.Nombre+' '+a.Ap_pat+' '+a.Ap_mat as Alumno, pe.ProgramaEd as ProgramaEducativo, " +
                 "c.Periodo + ' ' + cast(c.Anio as varchar) as Cuatrimestre, cast(g.Grado as varchar) + g.Letra as Grupo, " +
-                "pa.FechaConfirmado, pa.NumContagio from PositivoAlumno pa" +
-                "inner join Alumno a on pa.F_Alumno = a.ID_Alumno" +
-                "inner join AlumnoGrupo ag on ag.F_Alumn = a.ID_Alumno" +
-                "inner join GrupoCuatrimestre gc on ag.F_GruCuat = gc.Id_GruCuat" +
-                "inner join ProgramaEducativo pe on gc.F_ProgEd = pe.Id_pe" +
-                "inner join Cuatrimestre c on gc.F_Cuatri = c.id_Cuatrimestre" +
-                "inner join Grupo g on gc.F_Grupo = g.Id_grupo" +
+                "pa.FechaConfirmado, pa.NumContagio from PositivoAlumno pa " +
+                "inner join Alumno a on pa.F_Alumno = a.ID_Alumno " +
+                "inner join AlumnoGrupo ag on ag.F_Alumn = a.ID_Alumno " +
+                "inner join GrupoCuatrimestre gc on ag.F_GruCuat = gc.Id_GruCuat " +
+                "inner join ProgramaEducativo pe on gc.F_ProgEd = pe.Id_pe " +
+                "inner join Cuatrimestre c on gc.F_Cuatri = c.id_Cuatrimestre " +
+                "inner join Grupo g on gc.F_Grupo = g.Id_grupo " +
                 "where gc.F_ProgEd = @idProgramaEducativo and gc.F_Cuatri = @idCuatrimestre and gc.F_Grupo = @idGrupo;";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
@@ -695,7 +689,7 @@ namespace ClassLogicaNegocios
         }
 
         // regla para mostrar el seguimiento de un alumno (por su registro) en un cuatrimestre específico
-        public DataSet mostrarSeguimientoAlumno(int matriculaAlumno, int idCuatrimestre, ref string mensaje)
+        public DataSet mostrarSeguimientoAlumno(string matriculaAlumno, int idCuatrimestre, ref string mensaje)
         {
             string query = "select a.Matricula, a.Nombre+' '+a.Ap_pat+' '+a.Ap_mat as Alumno, pe.ProgramaEd as ProgramaEducativo, " +
                 "c.Periodo + ' ' + cast(c.Anio as varchar) as Cuatrimestre, " +
@@ -721,6 +715,8 @@ namespace ClassLogicaNegocios
             return null;
         }
 
+        //------------------------------------Consultas compuestas fin----------------------------------------
+
         // regla para obtener colección de grupos en ListItems para listbox
         public List<Grupo> obtenerColeccionGrupo(ref string mensaje)
         {
@@ -745,6 +741,93 @@ namespace ClassLogicaNegocios
                 }
             }
             return listGrupo;
+        }
+
+        // regla para obtener colección de estados civiles en ListItems para ddl
+        public List<EstadoCivil> obtenerColeccionEstadoCivil()
+        {
+            List<EstadoCivil> list = null;
+            string querySql = "SELECT * FROM EstadoCivil";
+            SqlParameter[] sqlParameters = null;
+            SqlDataReader reader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref querySql);
+            if (reader != null && reader.HasRows)
+            {
+                list = new List<EstadoCivil>();
+                while (reader.Read())
+                {
+                    list.Add(new EstadoCivil()
+                    {
+                        Id_Edo = reader.GetByte(0),
+                        Estado = reader.GetString(1).ToString()
+                    });
+                }
+            }
+            this.AccesoDatosSql.CerrarConexion();
+            return list;
+        }
+
+        // regla para obtener colección de grupo_cuatrimestre en ListItems para listbox
+        public List<FiltroGrupoCuatri> obtenerColeccionGrupoCuatri(ref string mensaje)
+        {
+            List<FiltroGrupoCuatri> listGrupoCuatri = null;
+            string query = "SELECT GC.Id_GruCuat,  PE.ProgramaEd, cast(G.Grado as varchar) + G.Letra as Grupo, C.Periodo, C.Anio " +
+                "FROM GrupoCuatrimestre GC JOIN ProgramaEducativo PE ON GC.F_ProgEd = PE.Id_pe " +
+                "JOIN Grupo G ON GC.F_Grupo = G.Id_grupo JOIN Cuatrimestre C ON GC.F_Cuatri = C.id_Cuatrimestre;";
+            SqlParameter[] sqlParameters = null;
+            DataSet dataGrupoCuatri = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
+            if (dataGrupoCuatri != null)
+            {
+                listGrupoCuatri = new List<FiltroGrupoCuatri>();
+                foreach (DataRow row in dataGrupoCuatri.Tables[0].Rows)
+                {
+                    listGrupoCuatri.Add(new FiltroGrupoCuatri()
+                    {
+                        id = (int)row[0],
+                        progEd = (string)row[1],
+                        grupo = (string)row[2],
+                        periodo = (string)row[3],
+                        anio=(int)row[4]
+                    });
+                }
+            }
+            return listGrupoCuatri;
+        }
+
+        // regla para obtener colección de medicos en ListItems
+        public List<Medico> obtenerListaMedicos(ref string mensaje)
+        {
+            List<Medico> listMedicos = null;
+            string query = "SELECT * FROM Medico;";
+            SqlParameter[] sqlParameters = null;
+            DataSet dataMedicos = AccesoDatosSql.ConsultaDS(query, sqlParameters, ref mensaje);
+            if (dataMedicos != null)
+            {
+                listMedicos = new List<Medico>();
+                foreach (DataRow row in dataMedicos.Tables[0].Rows)
+                {
+                    if ((object)row[8].ToString() == "")
+                        row[8] = "";
+                    if ((object)row[3].ToString() == "")
+                        row[3] = "";
+                    if ((object)row[7].ToString() == "")
+                        row[7] = "";
+                    if ((object)row[7].ToString() == "")
+                        row[6] = "";
+                    listMedicos.Add(new Medico()
+                    {
+                        id = (int)row[0],
+                        nombre = (string)row[1],
+                        app = (string)row[2],
+                        apm = (string)row[3],
+                        telefono = (string)row[4],
+                        correo = (string)row[5],
+                        horario = (string)row[6],
+                        especialidad = (string)row[7],
+                        extra = (string)row[8]
+                    });
+                }
+            }
+            return listMedicos;
         }
     }
 }

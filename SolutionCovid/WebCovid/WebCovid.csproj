@@ -101,7 +101,9 @@
     <Content Include="WebCuatrimestre.aspx" />
     <Content Include="WebInicio.aspx" />
     <Content Include="WebMedico.aspx" />
+    <Content Include="WebPositivoAlumno.aspx" />
     <Content Include="WebProfesor.aspx" />
+    <Content Include="WebSeguimientoAlumno.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -133,12 +135,26 @@
     <Compile Include="WebMedico.aspx.designer.cs">
       <DependentUpon>WebMedico.aspx</DependentUpon>
     </Compile>
+    <Compile Include="WebPositivoAlumno.aspx.cs">
+      <DependentUpon>WebPositivoAlumno.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebPositivoAlumno.aspx.designer.cs">
+      <DependentUpon>WebPositivoAlumno.aspx</DependentUpon>
+    </Compile>
     <Compile Include="WebProfesor.aspx.cs">
       <DependentUpon>WebProfesor.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="WebProfesor.aspx.designer.cs">
       <DependentUpon>WebProfesor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WebSeguimientoAlumno.aspx.cs">
+      <DependentUpon>WebSeguimientoAlumno.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebSeguimientoAlumno.aspx.designer.cs">
+      <DependentUpon>WebSeguimientoAlumno.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

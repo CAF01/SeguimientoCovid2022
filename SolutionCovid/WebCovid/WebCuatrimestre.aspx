@@ -9,6 +9,11 @@
     <link href="Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script src="Scripts/sweetalert2.min.js"></script>
     <link rel="Content/stylesheet" href="sweetalert2.min.css"/>
+    <script type="text/javascript">
+        function Alert(t, m, tipo) {
+            Swal.fire(t, m, tipo)
+        }
+    </script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sen&display=swap" rel="stylesheet"/>
     <style>
@@ -41,6 +46,18 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="WebMedico.aspx">Médico</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="WebPositivoAlumno.aspx">Positivo Alumno</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="WebSeguimientoAlumno.aspx">Seguimiento Alumno</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="WebPositivosProfe.aspx">Positivo Profesor</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="WebSeguimientoCasoProfe.aspx">Seguimiento Profesor</a>
                         </li>
                     </ul>
                 </div>
@@ -125,15 +142,15 @@
                                                   <label for="DropDownList1" class="form-label fs-3 fw-semibold">Añadir grupo a cuatrimestre</label>
                                                   <div class="mb-3">
                                                       <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlProEd" runat="server" class="form-select" data-toggle="dropdown"></asp:DropDownList> 
+                                                            <asp:DropDownList ID="ddlProEd" runat="server" class="form-select" data-toggle="dropdown" AppendDataBoundItems="True"></asp:DropDownList> 
                                                             <label for="ddlProEd">Programa Educativo</label>
                                                         </div>
                                                         <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlGrupo" runat="server" class="form-select"></asp:DropDownList>
+                                                            <asp:DropDownList ID="ddlGrupo" runat="server" class="form-select" AppendDataBoundItems="True"></asp:DropDownList>
                                                             <label for="ddlGrupo">Grupo</label>
                                                         </div>
                                                         <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlCuatri" runat="server" class="form-select"></asp:DropDownList>
+                                                            <asp:DropDownList ID="ddlCuatri" runat="server" class="form-select" AppendDataBoundItems="True"></asp:DropDownList>
                                                             <label for="ddlCuatri">Cuatrimestre</label>   
                                                         </div>
                                                         <div class="form-floating mb-3">
@@ -277,15 +294,15 @@
                                                 <div class="mb-3">
                                                     <h6><b>Datos del grupo de un cuatrimestre</b></h6>
                                                     <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlProgEdA" runat="server" class="form-select" data-toggle="dropdown"></asp:DropDownList> 
+                                                            <asp:DropDownList ID="ddlProgEdA" runat="server" class="form-select" data-toggle="dropdown" AppendDataBoundItems="True"></asp:DropDownList> 
                                                             <label for="ddlProgEdA">Programa Educativo</label>
                                                         </div>
                                                         <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlGrupoA" runat="server" class="form-select"></asp:DropDownList>
+                                                            <asp:DropDownList ID="ddlGrupoA" runat="server" class="form-select" AppendDataBoundItems="True"></asp:DropDownList>
                                                             <label for="ddlGrupoA">Grupo</label>
                                                         </div>
                                                         <div class="form-floating mb-3">
-                                                            <asp:DropDownList ID="ddlCuatriA" runat="server" class="form-select"></asp:DropDownList>
+                                                            <asp:DropDownList ID="ddlCuatriA" runat="server" class="form-select" AppendDataBoundItems="True"></asp:DropDownList>
                                                             <label for="ddlCuatriA">Cuatrimestre</label>   
                                                         </div>
                                                         <div class="form-floating mb-3">

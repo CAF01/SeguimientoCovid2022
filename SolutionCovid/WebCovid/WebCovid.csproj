@@ -43,12 +43,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ClassEntidades">
-      <HintPath>..\ClassEntidades\bin\Debug\ClassEntidades.dll</HintPath>
-    </Reference>
-    <Reference Include="ClassLogicaNegocios">
-      <HintPath>..\ClassLogicaNegocios\bin\Debug\ClassLogicaNegocios.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Web.DynamicData" />
@@ -160,7 +154,7 @@
     </Compile>
     <Compile Include="WebPositivoAlumno.aspx.designer.cs">
       <DependentUpon>WebPositivoAlumno.aspx</DependentUpon>
-	</Compile>  
+    </Compile>
     <Compile Include="WebPositivosProfe.aspx.designer.cs">
       <DependentUpon>WebPositivosProfe.aspx</DependentUpon>
     </Compile>
@@ -175,9 +169,15 @@
       <DependentUpon>WebSeguimientoCasoProfe.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="WebSeguimientoCasoProfe.aspx.designer.cs">
+      <DependentUpon>WebSeguimientoCasoProfe.aspx</DependentUpon>
+    </Compile>
     <Compile Include="WebSeguimientoAlumno.aspx.cs">
       <DependentUpon>WebSeguimientoAlumno.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebSeguimientoAlumno.aspx.designer.cs">
+      <DependentUpon>WebSeguimientoAlumno.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

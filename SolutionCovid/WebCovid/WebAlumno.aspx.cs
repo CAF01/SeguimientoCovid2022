@@ -22,9 +22,8 @@ namespace WebCovid
         {
             if (!IsPostBack)
             {
-                objBLAlumno = new LogicaNegociosAlumno("Server=20.187.117.181,1434;Database=SeguimientoCovidServer;User ID=sa;Password=admin1234;");
+                objBLAlumno = new LogicaNegociosAlumno(ConfigurationManager.ConnectionStrings["conexSql"].ConnectionString);
                 //objBLAlumno = new LogicaNegociosAlumno("Data Source=LAPTOP-KVRVONP6; Initial Catalog=SeguimientoCovid; Integrated Security=True;");
-                //ConfigurationManager.ConnectionStrings["conexSql"].ConnectionString
                 Session["objBLAlumno"] = objBLAlumno;
                 listEdoCivil = objBLAlumno.obtenerColeccionEstadoCivil();
                 Session["listEdoCivil"] = listEdoCivil;

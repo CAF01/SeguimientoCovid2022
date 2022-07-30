@@ -31,7 +31,7 @@
         </script>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-               <a class="navbar-brand" href="WebInicio.aspx">
+               <a class="navbar-brand" href="WebMedico.aspx">
                     <img src="Resources/icono.png" alt="" width="50" height="50" class="d-inline-block align-text-top"/>
                         SEGUIMIENTO COVID
                </a>
@@ -44,13 +44,34 @@
                     <a class="nav-link active" aria-current="page" href="WebProfesor.aspx">Profesor</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="WebAlumno.aspx">Alumno</a>
+                    <a class="nav-link" aria-current="page" href="WebGrupoProfe.aspx">Grupos de un Profesor</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" href="WebAlumno.aspx">Alumno</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="WebCuatrimestre.aspx">Cuatrimestre</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="WebMedico.aspx">Médico</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="WebPositivoAlumno.aspx">Positivo Alumno</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="WebSeguimientoAlumno.aspx">Seguimiento Alumno</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="WebPositivosProfe.aspx">Positivo Profesor</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="WebSeguimientoCasoProfe.aspx">Seguimiento Profesor</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="WebConsultasProfesor.aspx">Contagios Profesor</a>
+                  </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="WebIncapacidad.aspx">Incapadidad Profesor</a>
                   </li>
                 </ul>
               </div>

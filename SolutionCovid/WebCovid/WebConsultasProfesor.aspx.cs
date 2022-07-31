@@ -193,13 +193,13 @@ namespace WebCovid
             if(GVCasos.SelectedIndex>=0)
             {
                 int idCaso = Convert.ToInt32(GVCasos.SelectedRow.Cells[1].Text);
-                List<Incapacidad> incapacidads = logicaNegociosProfesor.MostrarPeriodosIncapacidadPorCaso(idCaso);
-                if(incapacidads.Count>0)
+                incapacidads1 = logicaNegociosProfesor.MostrarPeriodosIncapacidadPorCaso(idCaso);
+                if(incapacidads1 != null && incapacidads1.Count>0)
                 {
-                    Session["incapacidades"] = incapacidads;
+                    Session["incapacidades"] = incapacidads1;
                     DDLInca.Items.Clear();
                     ListItem listItem;
-                    foreach(Incapacidad item in incapacidads)
+                    foreach(Incapacidad item in incapacidads1)
                     {
                         listItem = new ListItem();
                         listItem.Text = String.Format("Incapacidad otorgada: {0} | Finaliza: {1}", item.Fecha_otorga.ToString("dd/MM/yyyy"), item.Fecha_finalizacion.ToString("dd/MM/yyyy"));
@@ -240,6 +240,7 @@ namespace WebCovid
         {
             if (DDLInca.SelectedIndex >= 0)
             {
+                incapacidads1 = (List<Incapacidad>)Session["incapacidades"];
                 string url = incapacidads1[DDLInca.SelectedIndex].IncapacidadUrl;
                 if (url.Contains(".pdf"))
                 {

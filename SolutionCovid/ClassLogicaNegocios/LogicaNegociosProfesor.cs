@@ -96,6 +96,7 @@ namespace ClassLogicaNegocios
         public Profesor BuscarProfesor(int IdProfesor)
         {
             Profesor profesor = null;
+
             string querySql = "SELECT * FROM PROFESOR WHERE ID_Profe=@id";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
@@ -122,12 +123,59 @@ namespace ClassLogicaNegocios
 
         public bool EliminarProfesor(int IdProfesor)
         {
-            string querySql = "DELETE FROM PROFESOR WHERE ID_Profe=@id";
+            string msg = "";
+            string querySql2 = "";
+            string querySql = "SELECT Id_posProfe FROM PositivoProfe WHERE F_Profe=@id";
+            List<int> idPositivos = new List<int>();
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
                 new SqlParameter("id",IdProfesor)
             };
-            return this.AccesoDatosSql.Modificar(querySql, sqlParameters, ref querySql);
+            SqlDataReader sqlDataReader = this.AccesoDatosSql.ConsultarReader(querySql, sqlParameters, ref msg);
+            if(sqlDataReader.HasRows)
+            {
+                querySql = "DELETE FROM Incapacidad WHERE id_posProfe=@id";
+                querySql2 = "DELETE FROM SeguimientoPRO WHERE F_positivoProfe=@idd";
+                while (sqlDataReader.Read())
+                {
+                    idPositivos.Add(sqlDataReader.GetInt32(0));
+                }
+                this.AccesoDatosSql.CerrarConexion();
+                foreach(int id in idPositivos)
+                {
+                    SqlParameter[] sqlParameters1 = new SqlParameter[]
+                    {
+                    new SqlParameter("id",id)
+                    };
+                    SqlParameter[] sqlParameters2 = new SqlParameter[]
+                    {
+                    new SqlParameter("idd",id)
+                    };
+                    this.AccesoDatosSql.Modificar(querySql, sqlParameters1, ref msg);
+                    this.AccesoDatosSql.Modificar(querySql2, sqlParameters2, ref msg);
+
+                }
+                querySql = "DELETE FROM PositivoProfe WHERE F_Profe=@id";
+                SqlParameter[] sqlParameters3 = new SqlParameter[]
+                {
+                    new SqlParameter("id",IdProfesor)
+                };
+                this.AccesoDatosSql.Modificar(querySql, sqlParameters3, ref msg);
+            }
+            
+            querySql = "DELETE FROM ProfeGrupo WHERE F_Profe=@id";
+            SqlParameter[] sqlParameters5 = new SqlParameter[]
+            {
+                    new SqlParameter("id",IdProfesor)
+            };
+            this.AccesoDatosSql.Modificar(querySql, sqlParameters5, ref msg);
+
+            querySql = "DELETE FROM PROFESOR WHERE ID_Profe=@id";
+            SqlParameter[]  sqlParameters4 = new SqlParameter[]
+            {
+                new SqlParameter("id",IdProfesor)
+            };
+            return this.AccesoDatosSql.Modificar(querySql, sqlParameters4, ref msg);
         }
 
 

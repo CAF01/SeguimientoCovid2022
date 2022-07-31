@@ -15,25 +15,19 @@ namespace WebCovid
         List<Profesor> Profesors;
         protected void Page_Load(object sender, EventArgs e)
         {
-            LBR.Visible = false;
-            DDLProfs.Visible = false;
             if (!IsPostBack)
             {
-                if (Session["NegociosProf"] != null)
+                this.NegociosProfesor = new LogicaNegociosProfesor(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
+                Session["NegociosProf"] = this.NegociosProfesor;
+                this.Civils= this.NegociosProfesor.DevolverEstadoCivil();
+                Session["Civils"] = this.Civils;
+                this.Profesors = this.NegociosProfesor.MostrarProfesores();
+                Session["Profs"]= this.Profesors;
+                if (Civils != null && Civils.Count > 0)
                 {
-                    this.NegociosProfesor = (LogicaNegociosProfesor)Session["NegociosProf"];
-                    this.Civils = (List<EstadoCivil>)Session["Civils"];
-                    this.Profesors = (List<Profesor>)Session["Profs"];
-                }
-
-                else
-                {
-                    this.NegociosProfesor = new LogicaNegociosProfesor(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
-                    Session["NegociosProf"] = this.NegociosProfesor;
-                    this.Civils= this.NegociosProfesor.DevolverEstadoCivil();
-                    Session["Civils"] = this.Civils;
-                    this.Profesors = this.NegociosProfesor.MostrarProfesores();
-                    Session["Profs"]= this.Profesors;
+                    this.EstablecerListEstadoCivil();
+                    LBR.Visible = false;
+                    DDLProfs.Visible = false;
                 }
 
             }
@@ -42,10 +36,6 @@ namespace WebCovid
                 this.NegociosProfesor = (LogicaNegociosProfesor)Session["NegociosProf"];
                 this.Civils = (List<EstadoCivil>)Session["Civils"];
                 this.Profesors = (List<Profesor>) Session["Profs"];
-            }
-            if (Civils != null && Civils.Count > 0)
-            {
-                this.EstablecerListEstadoCivil();
             }
 
         }
@@ -82,7 +72,13 @@ namespace WebCovid
                         F_EdoCivil = Convert.ToByte(DDLEDO.SelectedValue)
                     });
                     if (flag)
+                    {
+                        this.Profesors = this.NegociosProfesor.MostrarProfesores();
+                        Session["Profs"] = this.Profesors;
+                        GVProfesor.DataSource = this.NegociosProfesor.MostrarProfesoresPocaInfo(ref Cat);
+                        GVProfesor.DataBind();
                         this.EnviaAlertas("Correcto!", "¡Nuevo Profesor agregado!", "success");
+                    }
                     else
                         this.EnviaAlertas("OOps!", "¡Algo fallo con el registro!", "info");
                     TB1.Text = ""; TB2.Text = ""; TB3.Text = ""; TB4.Text = ""; TB5.Text = ""; TB6.Text = "";
@@ -100,6 +96,7 @@ namespace WebCovid
         {
             string msg = "";
             this.Profesors = this.NegociosProfesor.MostrarProfesores();
+            Session["Profs"] = this.Profesors;
             GVProfesor.DataSource = this.NegociosProfesor.MostrarProfesoresPocaInfo(ref msg);
             GVProfesor.DataBind();
         }
@@ -149,6 +146,7 @@ namespace WebCovid
                     this.EnviaAlertas("Error", "No se hallaron resultados con la busqueda indicada", "error");
                     LBR.Visible = false;
                     DDLProfs.Visible = false;
+                    DDLProfs.Items.Clear();
                 }
                     
             }
@@ -314,6 +312,7 @@ namespace WebCovid
             GVProfesor.DataSource = this.NegociosProfesor.MostrarProfesoresPocaInfo(ref msg);
             GVProfesor.DataBind();
             GVProfesor.SelectedIndex = -1;
+            DDLProfs.Items.Clear();
         }
     }
 }

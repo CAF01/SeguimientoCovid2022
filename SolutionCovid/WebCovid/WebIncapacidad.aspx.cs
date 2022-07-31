@@ -19,33 +19,22 @@ namespace WebCovid
         {
             if (!IsPostBack)
             {
-                if (Session["NegCovProfIncap"] != null && Session["NegCovMedIncap"] != null)
-                {
-                    this.LogicaNegociosProfesor = (LogicaNegociosProfesor)Session["NegCovProfIncap"];
-                    this.LogicaNegociosMedico = (LogicaNegociosMedico)Session["NegCovMedIncap"];
-                }
-
-                else
-                {
-                    this.LogicaNegociosProfesor = new LogicaNegociosProfesor(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
-                    this.LogicaNegociosMedico = new LogicaNegociosMedico(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
-                    Session["NegCovProfIncap"] = this.LogicaNegociosProfesor;
-                    Session["NegCovMedIncap"] = this.LogicaNegociosMedico;
-                }
-            }
-            else
-            {
-                this.LogicaNegociosProfesor = (LogicaNegociosProfesor)Session["NegCovProfIncap"];
-                this.LogicaNegociosMedico = (LogicaNegociosMedico)Session["NegCovMedIncap"];
-            }
-            if (this.LogicaNegociosProfesor != null)
-            {
+                this.LogicaNegociosProfesor = new LogicaNegociosProfesor(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
+                this.LogicaNegociosMedico = new LogicaNegociosMedico(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
+                Session["NegCovProfIncap"] = this.LogicaNegociosProfesor;
+                Session["NegCovMedIncap"] = this.LogicaNegociosMedico;
                 DataSet data = this.LogicaNegociosProfesor.MostrarCasosPositivosConFiltro();
                 GVPos2.DataSource = data;
                 GVPos.DataSource = data;
                 GVPos.DataBind();
                 GVPos2.DataBind();
-                
+                Cal1.SelectedDate = DateTime.Today;
+                Cal2.SelectedDate = DateTime.Today.AddDays(1);
+            }
+            else
+            {
+                this.LogicaNegociosProfesor = (LogicaNegociosProfesor)Session["NegCovProfIncap"];
+                this.LogicaNegociosMedico = (LogicaNegociosMedico)Session["NegCovMedIncap"];
             }
             if (!(GVInca.DataSource != null) && !(GVInca.SelectedIndex >= 0))
             {
@@ -140,7 +129,7 @@ namespace WebCovid
                         FU1.SaveAs(Server.MapPath(Url));
                     }
                 }
-                else
+                if(extension.ToLower() != ".pdf" && extension.ToLower() != ".png" && extension.ToLower() != ".jpg")
                     Url = "FAKE";
             }
             return Url;
@@ -211,13 +200,13 @@ namespace WebCovid
                             EnviaAlertas("¡Error!", "Solo se admiten archivos .pdf / .png / .jpg", "error");
                         if (url != "LARGE" && url != "FAKE")
                         {
-                            int idPos = Convert.ToInt32(GVPos2.SelectedRow.Cells[1].Text);
+                            int idIncapacidad = Convert.ToInt32(GVInca.SelectedRow.Cells[1].Text);
                             Incapacidad incapacidad = new Incapacidad()
                             {
                                 Fecha_otorga = Cal3.SelectedDate,
                                 Fecha_finalizacion = Cal4.SelectedDate,
                                 IncapacidadUrl = url,
-                                id_Incapacidad = idPos
+                                id_Incapacidad = idIncapacidad
                             };
                             if (this.LogicaNegociosProfesor.ModificarIncapacidad(incapacidad))
                             {
@@ -245,14 +234,14 @@ namespace WebCovid
         {
             if (GVInca.SelectedIndex >= 0 && GVPos2.SelectedIndex >= 0)
             {
-                int idPos = Convert.ToInt32(GVPos2.SelectedRow.Cells[1].Text);
-                if (this.LogicaNegociosProfesor.EliminarIncapacidad(idPos))
+                int idIncapacidad = Convert.ToInt32(GVInca.SelectedRow.Cells[1].Text);
+                if (this.LogicaNegociosProfesor.EliminarIncapacidad(idIncapacidad))
                 {
                     this.EnviaAlertas("Correcto!", "Registro de Incapacidad eliminado Correctamente", "success");
                     LimpiarGVIncapacidad();
                 }
                 GVPos2.SelectedIndex = -1; Cal3.SelectedDate = DateTime.Today;
-                Cal4.SelectedDate = DateTime.Today.AddDays(1);
+                Cal4.SelectedDate = DateTime.Today.AddDays(1); Img1.ImageUrl = null;
             }
             else
             {

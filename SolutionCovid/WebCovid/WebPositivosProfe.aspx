@@ -111,7 +111,7 @@
                         <div class="form-group">
                             <div class="mb-3">
                                     <p class="fs-3"><mark>Selecciona </mark> a un profesor para el registro.</p>
-                                     <asp:GridView ID="GVProfesor" runat="server" CellPadding="4" ForeColor="#333333" GridLines="None">
+                                     <asp:GridView ID="GVProfesor" runat="server" CellPadding="4" ForeColor="#333333" GridLines="None" OnSelectedIndexChanged="GVProfesor_SelectedIndexChanged">
                                             <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                                             <Columns>
                                                 <asp:CommandField ButtonType="Button" SelectText="Seleccionar" ShowSelectButton="True" />

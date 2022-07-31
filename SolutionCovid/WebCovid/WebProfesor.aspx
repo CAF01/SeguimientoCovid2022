@@ -261,7 +261,7 @@
                                               <div class="text-center">
 
                                                                     <asp:Label ID="LBR" class="form-floating mb-3 fs-2 fw-semibold" runat="server" Text="Resultados de busqueda"></asp:Label>    
-                                                                    <asp:DropDownList ID="DDLProfs" class="form-select" runat="server" OnSelectedIndexChanged="DDLProfs_SelectedIndexChanged"></asp:DropDownList>
+                                                                    <asp:DropDownList ID="DDLProfs" class="form-select" runat="server" OnSelectedIndexChanged="DDLProfs_SelectedIndexChanged" AppendDataBoundItems="True" AutoPostBack="True"></asp:DropDownList>
 
                                              </div>
                                                     <hr />

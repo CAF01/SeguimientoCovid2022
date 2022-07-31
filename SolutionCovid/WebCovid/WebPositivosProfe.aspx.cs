@@ -19,24 +19,14 @@ namespace WebCovid
         {
             if (!IsPostBack)
             {
-                if (Session["NegociosCovidProf"] != null)
-                {
-                    this.NegociosProfesor = (LogicaNegociosProfesor)Session["NegociosCovidProf"];
-                    this.Profesors = (List<Profesor>)Session["ProfsCovid"];
-                    this.comprobaciones = (List<string>)Session["ListaComp"];
-                }
-
-                else
-                {
-                    this.NegociosProfesor = new LogicaNegociosProfesor(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
-                    Session["NegociosCovidProf"] = this.NegociosProfesor;
-                    this.Profesors = this.NegociosProfesor.MostrarProfesores();
-                    Session["ProfsCovid"] = this.Profesors;
-                    this.comprobaciones = this.NegociosProfesor.DevolverRutasdeCasosCovid();
-                    Session["ListaComp"] = this.comprobaciones;
-                    MostrarDatosTabla();
-                    Button1.Visible = false;
-                }
+                this.NegociosProfesor = new LogicaNegociosProfesor(ConfigurationManager.ConnectionStrings["BaseSqlChris"].ConnectionString);
+                Session["NegociosCovidProf"] = this.NegociosProfesor;
+                this.Profesors = this.NegociosProfesor.MostrarProfesores();
+                Session["ProfsCovid"] = this.Profesors;
+                this.comprobaciones = this.NegociosProfesor.DevolverRutasdeCasosCovid();
+                Session["ListaComp"] = this.comprobaciones;
+                MostrarDatosTabla();
+                Button1.Visible = false;
                 CalConfirma.SelectedDate = DateTime.Today;
             }
             else
@@ -151,7 +141,7 @@ namespace WebCovid
                         FilePDFImg.SaveAs(Server.MapPath(Url));
                     }
                 }
-                else
+                if (extension.ToLower() != ".pdf" && extension.ToLower() != ".jpg" && extension.ToLower() != ".png")
                     Url = "FAKE";
             }
             return Url;
@@ -166,13 +156,13 @@ namespace WebCovid
 
             int fileSize;
 
-            if (FilePDFImg.HasFile)
+            if (FileUp2.HasFile)
             {
-                extension = Path.GetExtension(FilePDFImg.PostedFile.FileName);
+                extension = Path.GetExtension(FileUp2.PostedFile.FileName);
                 if (extension.ToLower() == ".jpg" || extension.ToLower() == ".png")
                 {
-                    FileName = FilePDFImg.FileName;
-                    fileSize = FilePDFImg.PostedFile.ContentLength;
+                    FileName = FileUp2.FileName;
+                    fileSize = FileUp2.PostedFile.ContentLength;
                     if (fileSize > 1002400)
                     {
                         Url = "LARGE";
@@ -181,23 +171,23 @@ namespace WebCovid
                     {
                         imgPath = "comprobacion/imgPruebas/";
                         Url = imgPath + FileName;
-                        FilePDFImg.SaveAs(Server.MapPath(Url));
+                        FileUp2.SaveAs(Server.MapPath(Url));
                     }
                 }
                 if (extension.ToLower() == ".pdf")
                 {
-                    FileName = FilePDFImg.FileName;
-                    fileSize = FilePDFImg.PostedFile.ContentLength;
+                    FileName = FileUp2.FileName;
+                    fileSize = FileUp2.PostedFile.ContentLength;
                     if (fileSize > 1002400)
                         Url = "LARGE";
                     else
                     {
                         imgPath = "comprobacion/pdfPruebas/";
                         Url = imgPath + FileName;
-                        FilePDFImg.SaveAs(Server.MapPath(Url));
+                        FileUp2.SaveAs(Server.MapPath(Url));
                     }
                 }
-                else
+                if(extension.ToLower() != ".pdf" && extension.ToLower() != ".jpg" && extension.ToLower() != ".png")
                     Url = "FAKE";
             }
             else
@@ -384,6 +374,11 @@ namespace WebCovid
                 Image1.ImageUrl = "~/" + lblurl.Text;
             }
             
+        }
+
+        protected void GVProfesor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
